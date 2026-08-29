@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ZELZAL CHAT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="shell">
+    <section id="authView" class="card auth">
+      <div class="logo">⚡</div>
+      <h1>ZELZAL CHAT</h1>
+      <p class="muted">دردشة ورومات بشكل بسيط وسريع</p>
+      <div class="tabs">
+        <button id="loginTab" class="active">دخول</button>
+        <button id="signupTab">إنشاء حساب</button>
+      </div>
+      <form id="authForm">
+        <input id="email" type="email" placeholder="البريد الإلكتروني" required>
+        <input id="password" type="password" placeholder="كلمة المرور" minlength="6" required>
+        <input id="displayName" type="text" placeholder="اسم المستخدم" maxlength="30" class="hidden">
+        <button class="primary" type="submit" id="authSubmit">دخول</button>
+      </form>
+      <p id="authMsg" class="msg"></p>
+    </section>
+
+    <section id="appView" class="hidden">
+      <header class="topbar">
+        <div>
+          <strong>⚡ ZELZAL CHAT</strong>
+          <span id="userLabel" class="muted"></span>
+        </div>
+        <button id="logoutBtn" class="ghost">تسجيل خروج</button>
+      </header>
+
+      <div class="layout">
+        <aside class="card rooms">
+          <div class="sectionHead">
+            <h2>الرومات</h2>
+            <button id="newRoomBtn" class="iconBtn" title="إنشاء روم">+</button>
+          </div>
+          <div id="roomsList"></div>
+        </aside>
+
+        <section class="card chat">
+          <div class="chatHead">
+            <div>
+              <h2 id="roomTitle">اختر روم</h2>
+              <small id="roomDesc" class="muted"></small>
+            </div>
+            <span id="onlineCount" class="online">● متصل</span>
+          </div>
+          <div id="messages" class="messages">
+            <div class="empty">اختر رومًا للبدء</div>
+          </div>
+          <form id="messageForm" class="composer">
+            <input id="messageInput" maxlength="1000" placeholder="اكتب رسالتك..." autocomplete="off" disabled>
+            <button class="primary" type="submit" disabled id="sendBtn">إرسال</button>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="roomModal" class="modal hidden">
+    <div class="modalBox card">
+      <h2>إنشاء روم</h2>
+      <input id="roomName" maxlength="50" placeholder="اسم الروم">
+      <input id="roomDescription" maxlength="120" placeholder="وصف مختصر">
+      <div class="modalActions">
+        <button id="cancelRoom" class="ghost">إلغاء</button>
+        <button id="createRoom" class="primary">إنشاء</button>
+      </div>
+      <p id="roomMsg" class="msg"></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
