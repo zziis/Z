@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b12">
+  <title>ZELZAL CHAT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="shell">
+    <section id="authView" class="card auth">
+      <div class="logo">⚡</div>
+      <h1>ZELZAL CHAT</h1>
+      <p class="muted">دردشة ورومات ورسائل خاصة</p>
+      <div class="tabs">
+        <button id="loginTab" class="active" type="button">دخول</button>
+        <button id="signupTab" type="button">إنشاء حساب</button>
+      </div>
+      <form id="authForm">
+        <input id="email" type="email" placeholder="البريد الإلكتروني" required>
+        <input id="password" type="password" placeholder="كلمة المرور" minlength="6" required>
+        <input id="displayName" type="text" placeholder="الاسم الظاهر" maxlength="30" class="hidden">
+        <input id="username" type="text" placeholder="اليوزر مثل zelzal" maxlength="24" class="hidden" autocomplete="off">
+        <button class="primary" type="submit" id="authSubmit">دخول</button>
+      </form>
+      <p id="authMsg" class="msg"></p>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div id="welcomeBanner" class="welcomeBanner hidden"></div>
+
+      <header class="topbar card">
+        <button id="menuBtn" class="iconBtn mobileOnly" type="button" aria-label="القائمة">☰</button>
+        <div class="brandWrap">
+          <strong>⚡ ZELZAL CHAT</strong>
+          <span id="userLabel" class="muted"></span>
+        </div>
+        <div class="topActions">
+          <button id="musicBtn" class="ghost" type="button">♫ موسيقى</button>
+          <button id="adminBtn" class="ghost hidden" type="button">⚙ الإدارة</button>
+          <button id="logoutBtn" class="ghost" type="button">خروج</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside id="sidePanel" class="card sidebar">
+          <div class="sideTabs">
+            <button id="roomsTab" class="active" type="button">الرومات</button>
+            <button id="dmTab" type="button">الخاص <span id="dmBadge" class="badge hidden">0</span></button>
+          </div>
+
+          <section id="roomsPane">
+            <div class="sectionHead">
+              <h2>الرومات</h2>
+              <button id="newRoomBtn" class="iconBtn" title="إنشاء روم" type="button">+</button>
+            </div>
+            <div id="roomsList"></div>
+          </section>
+
+          <section id="dmPane" class="hidden">
+            <div class="sectionHead">
+              <h2>الرسائل الخاصة</h2>
+              <button id="newDmBtn" class="iconBtn" title="محادثة جديدة" type="button">＋</button>
+            </div>
+            <div id="dmList"></div>
+          </section>
+        </aside>
+
+        <section class="card chat">
+          <div class="chatHead">
+            <div>
+              <h2 id="chatTitle">اختر روم</h2>
+              <small id="chatDesc" class="muted"></small>
+            </div>
+            <div class="chatHeadActions">
+              <span id="chatStatus" class="online">● جاهز</span>
+              <button id="deleteRoomBtn" class="danger hidden" type="button">حذف الروم</button>
+            </div>
+          </div>
+
+          <div id="messages" class="messages">
+            <div class="empty">اختر رومًا أو محادثة خاصة للبدء</div>
+          </div>
+
+          <form id="messageForm" class="composer">
+            <input id="messageInput" maxlength="1000" placeholder="اكتب رسالتك..." autocomplete="off" disabled>
+            <button class="primary" type="submit" disabled id="sendBtn">إرسال</button>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="roomModal" class="modal hidden">
+    <div class="modalBox card">
+      <h2>إنشاء روم</h2>
+      <input id="roomName" maxlength="50" placeholder="اسم الروم">
+      <input id="roomDescription" maxlength="120" placeholder="وصف مختصر">
+      <div class="modalActions">
+        <button id="cancelRoom" class="ghost" type="button">إلغاء</button>
+        <button id="createRoom" class="primary" type="button">إنشاء</button>
+      </div>
+      <p id="roomMsg" class="msg"></p>
+    </div>
+  </div>
+
+  <div id="dmModal" class="modal hidden">
+    <div class="modalBox card">
+      <h2>محادثة خاصة جديدة</h2>
+      <p class="muted">ابحث بالاسم أو اليوزر</p>
+      <input id="userSearch" maxlength="40" placeholder="مثال: @zelzal أو زلزال">
+      <div id="userSearchResults" class="searchResults"></div>
+      <div class="modalActions single">
+        <button id="closeDmModal" class="ghost" type="button">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminModal" class="modal hidden">
+    <div class="modalBox card adminBox">
+      <div class="sectionHead">
+        <h2>⚙ لوحة مدير التطبيق</h2>
+        <button id="closeAdmin" class="ghost" type="button">إغلاق</button>
+      </div>
+
+      <div class="adminGrid">
+        <section class="adminSection">
+          <h3>الشريط الترحيبي</h3>
+          <textarea id="adminWelcome" maxlength="220" placeholder="اكتب رسالة الترحيب أو الإعلان"></textarea>
+          <label class="check"><input id="adminWelcomeEnabled" type="checkbox"> إظهار الشريط</label>
+        </section>
+
+        <section class="adminSection">
+          <h3>الموسيقى الهادئة</h3>
+          <select id="adminMusicMode">
+            <option value="off">إيقاف الموسيقى</option>
+            <option value="calm1">هدوء 1</option>
+            <option value="calm2">هدوء 2</option>
+            <option value="custom">رابط MP3 مخصص</option>
+          </select>
+          <input id="adminMusicUrl" placeholder="https://example.com/music.mp3">
+          <input id="adminMusicTitle" maxlength="40" placeholder="اسم المقطوعة">
+        </section>
+      </div>
+
+      <div class="modalActions">
+        <button id="saveSettings" class="primary" type="button">حفظ الإعدادات</button>
+      </div>
+      <p id="adminMsg" class="msg"></p>
+
+      <hr>
+      <h3>المستخدمون</h3>
+      <input id="adminUserSearch" maxlength="40" placeholder="بحث بالاسم أو @username">
+      <div id="adminUsers" class="adminUsers"></div>
+    </div>
+  </div>
+
+  <audio id="customAudio" loop preload="none"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
