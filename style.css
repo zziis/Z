@@ -2783,10 +2783,14 @@ html.gaming-mode .theme-disabled-by-gaming{opacity:.42!important;cursor:not-allo
 /* V14 overrides V13's light-theme gaming overlay completely. */
 [data-theme="gaming"].gaming-mode body,[data-theme="gaming"].gaming-mode .main-header,[data-theme="gaming"].gaming-mode .top-utility-bar,[data-theme="gaming"].gaming-mode .side-drawer,[data-theme="gaming"].gaming-mode .full-screen-view,[data-theme="gaming"].gaming-mode .view-header{background-color:#080b14!important;color:#f5f7ff!important}
 
-/* V15 developer hotfix */
-.dev-mode-switch{top:max(10px,env(safe-area-inset-top));z-index:20050!important}
-.developer-center{z-index:19990!important;padding-top:84px}
-.dev-head-actions{display:flex;gap:8px;flex-wrap:wrap}
-.dev-tabs button.active{background:linear-gradient(135deg,#714cff,#00bfe8);box-shadow:0 0 14px #6d58ff55}
-.developer-preview #developerCenter{display:none!important}
-@media(max-width:700px){.dev-mode-switch{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;width:92vw;justify-content:center}.dev-mode-switch button{flex:1}.dev-shell>header{margin-top:4px;gap:10px}.dev-head-actions{justify-content:flex-start}.dev-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}.dev-tabs button{width:100%}}
+/* V16 developer controls stability */
+#devModeSwitch.dev-mode-switch{position:fixed!important;top:max(8px,env(safe-area-inset-top))!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;z-index:2147483000!important;display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+#devModeSwitch button{pointer-events:auto!important;min-width:190px!important}
+body.developer-preview #devModeSwitch{display:flex!important;visibility:visible!important;opacity:1!important}
+body.developer-preview #devModeSwitch .return-dev{background:linear-gradient(135deg,#7b4dff,#00cfff)!important;color:#fff!important}
+.developer-center{z-index:2147482000!important}
+.dev-tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;overflow:visible!important}
+.dev-tabs button{min-width:0!important;white-space:normal!important;touch-action:manipulation!important;pointer-events:auto!important}
+.dev-tabs button.active{background:linear-gradient(135deg,#714cff,#00bfe8)!important;border-color:transparent!important}
+.dev-shell button,.dev-toggle input{pointer-events:auto!important;touch-action:manipulation!important}
+@media(max-width:700px){.dev-tabs{grid-template-columns:repeat(3,1fr)!important}.dev-tabs button{font-size:12px!important;padding:10px 5px!important}#devModeSwitch button{min-width:180px!important}}
