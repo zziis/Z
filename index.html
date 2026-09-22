@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تاج الملوك | Crown of Kings</title>
+    <!-- Fonts: Cairo & Orbitron for luxury modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Orbitron:wght@500;700;900&family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="guest-mode">
+    <!-- Royal startup splash -->
+    <div id="royalSplash" class="royal-splash" aria-label="تحميل المنصة">
+      <video id="royalIntroVideo" class="royal-intro-video" src="royal-intro.mp4" autoplay playsinline preload="auto"></video>
+      <button id="enableIntroSound" class="enable-intro-sound" type="button"><i class="fa-solid fa-volume-high"></i> تشغيل الصوت</button>
+      <div class="royal-loading-box">
+        <div class="royal-loading-title">تاج الملوك</div>
+        <div class="royal-progress-track"><div id="royalProgressBar" class="royal-progress-bar"></div></div>
+        <div id="royalProgressText" class="royal-progress-text">0%</div>
+      </div>
+    </div>
+
+
+    <!-- Top Announcement & Utilities Bar (شريط علوي للإعلانات والخيارات) -->
+    <div class="top-utility-bar">
+        <div class="container-fluid top-bar-inner">
+            <!-- Ads / News Ticker -->
+            <div class="ads-ticker-wrap">
+                <span class="ticker-badge" data-key="top_badge"><i class="fa-solid fa-bolt"></i> عاجل</span>
+                <div class="ticker-content" id="tickerContent">
+                    <span data-key="ad_text_1">👑 مرحباً بكم في منصة تاج الملوك - الإصدار الملكي الأحدث متاح الآن مجاناً!</span>
+                    <span data-key="ad_text_2">⚡ عروض حصرية على أكواد التفعيل وخصومات تصل إلى 50%</span>
+                    <span data-key="ad_text_3">🎮 تمت إضافة مكتبة الألعاب السحابية الجديدة وسيرفرات فائقة السرعة</span>
+                </div>
+            </div>
+
+            <!-- Utilities: Theme Toggle & Language Switcher -->
+            <div class="top-utilities">
+                <div class="live-stats" id="liveStats" title="الوقت ومعدل الإطارات">
+                    <span id="liveClock">--:--:--</span><span class="stats-sep">•</span><span id="liveFps">FPS --</span>
+                </div>
+
+                <!-- Guest Status Indicator -->
+                <button class="guest-badge" id="guestBadge" title="تسجيل الدخول أو إنشاء حساب" type="button" onclick="openSection('login')">
+                    <span class="status-dot"></span>
+                    <i class="fa-regular fa-user"></i>
+                    <span data-key="guest_status">زائر</span>
+                </button>
+
+                <!-- Dark / Light Mode Switcher -->
+                <button class="theme-toggle-btn" id="themeToggleBtn" title="تبديل الوضع">
+                    <i class="fa-solid fa-moon icon-dark"></i>
+                    <i class="fa-solid fa-sun icon-light"></i>
+                    
+                </button>
+
+                <!-- Language Switcher -->
+                <button class="lang-toggle-btn" id="langToggleBtn" title="Change Language / تغيير اللغة">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="langText">EN</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header (الهيدر الرئيسي) -->
+    <header class="main-header">
+        <div class="header-container">
+            <!-- RIGHT: Platform Logo & Neon Visual (صورة وشعار المنصة على اليمين) -->
+            <div class="header-right">
+                <a href="javascript:void(0)" class="platform-logo-link" onclick="openSection('home')">
+                    <div class="logo-glow-wrapper">
+                        <svg class="crown-svg-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FFF3A1"/>
+                                    <stop offset="50%" stop-color="#F5B800"/>
+                                    <stop offset="100%" stop-color="#C28700"/>
+                                </linearGradient>
+                                <linearGradient id="neonCyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#00F0FF"/>
+                                    <stop offset="100%" stop-color="#7000FF"/>
+                                </linearGradient>
+                                <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                </filter>
+                            </defs>
+                            <path d="M12 75 L88 75 L82 85 L18 85 Z" fill="url(#goldGrad)" filter="url(#glowEffect)"/>
+                            <path d="M15 70 L25 35 L40 55 L50 20 L60 55 L75 35 L85 70 Z" fill="url(#goldGrad)" stroke="url(#neonCyanGrad)" stroke-width="2.5" filter="url(#glowEffect)"/>
+                            <circle cx="50" cy="18" r="5" fill="#00F0FF" filter="url(#glowEffect)"/>
+                            <circle cx="25" cy="32" r="4" fill="#FF007A" filter="url(#glowEffect)"/>
+                            <circle cx="75" cy="32" r="4" fill="#FF007A" filter="url(#glowEffect)"/>
+                            <circle cx="35" cy="78" r="2.5" fill="#00F0FF"/>
+                            <circle cx="50" cy="78" r="3" fill="#FFF"/>
+                            <circle cx="65" cy="78" r="2.5" fill="#00F0FF"/>
+                        </svg>
+                    </div>
+                    <div class="logo-subtext">
+                        <span class="subtext-gold" data-key="tag_vip">VIP STORE</span>
+                        <span class="subtext-neon" data-key="tag_v">V3.0</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- CENTER: Platform Name (اسم المنصة في الوسط) -->
+            <div class="header-center">
+                <h1 class="platform-title">
+                    <span class="title-crown-icon"><i class="fa-solid fa-crown"></i></span>
+                    <span class="title-text" data-key="platform_name">تاج الملوك</span>
+                    <span class="title-crown-icon title-crown-icon-left"><i class="fa-solid fa-crown"></i></span>
+
+                </h1>
+                <p class="platform-slogan" data-key="platform_slogan">بوابتك الشاملة للتطبيقات والألعاب والخدمات الحصرية</p>
+            </div>
+
+            <!-- LEFT: 3-Bars Hamburger Button (3 شرطات على اليسار) -->
+            <div class="header-left">
+                <button class="hamburger-btn" id="menuToggleBtn" aria-label="فتح القائمة" onclick="toggleSidebar()">
+                    <span class="bar bar-1"></span>
+                    <span class="bar bar-2"></span>
+                    <span class="bar bar-3"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 49% Sidebar Drawer (القائمة المنبثقة من اليمين بنسبة 49%) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+    <aside class="side-drawer" id="sideDrawer">
+        <div class="drawer-header">
+            <div class="drawer-title-wrap">
+                <div class="drawer-logo-icon"><i class="fa-solid fa-crown"></i></div>
+                <div>
+                    <h3 data-key="drawer_title">قائمة تاج الملوك</h3>
+                    <p data-key="drawer_subtitle">تصفح كافة أقسام المنصة</p>
+                </div>
+            </div>
+            <button class="drawer-close-btn" onclick="closeSidebar()" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- 12 Sections in Sidebar -->
+        <nav class="drawer-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link active" onclick="openSection('home')">
+                        <span class="nav-icon neon-gold"><i class="fa-solid fa-house"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_home">الرئيسية</strong>
+                            <small data-key="sec_home_sub">الصفحة الأولى والأخبار</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('buy-code')">
+                        <span class="nav-icon neon-cyan"><i class="fa-solid fa-cart-shopping"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_buy_code">شراء كود</strong>
+                            <small data-key="sec_buy_code_sub">باقات وأسعار الأكواد</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('activate-code')">
+                        <span class="nav-icon neon-green"><i class="fa-solid fa-key"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_activate_code">تفعيل كود</strong>
+                            <small data-key="sec_activate_code_sub">فحص وتنشيط اشتراكك</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('download-store')">
+                        <span class="nav-icon neon-purple"><i class="fa-solid fa-circle-down"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_download_store">تحميل المتجر</strong>
+                            <small data-key="sec_download_store_sub">تطبيق المتجر لكافة الأجهزة</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('apps')">
+                        <span class="nav-icon neon-blue"><i class="fa-solid fa-cubes"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_apps">التطبيقات</strong>
+                            <small data-key="sec_apps_sub">تطبيقات بلس والمعدلة</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('games')">
+                        <span class="nav-icon neon-pink"><i class="fa-solid fa-gamepad"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_games">العاب</strong>
+                            <small data-key="sec_games_sub">ألعاب مهكرة ومميزة</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('cloud-games')">
+                        <span class="nav-icon neon-amber"><i class="fa-solid fa-cloud"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_cloud_games">العاب سحابية</strong>
+                            <small data-key="sec_cloud_games_sub">تشغيل الألعاب أونلاين فوراً</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('links')">
+                        <span class="nav-icon neon-teal"><i class="fa-solid fa-link"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_links">الروابط</strong>
+                            <small data-key="sec_links_sub">القنوات والسيرفرات البديلة</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('emulators')">
+                        <span class="nav-icon neon-indigo"><i class="fa-solid fa-laptop-code"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_emulators">المحاكي</strong>
+                            <small data-key="sec_emulators_sub">محاكيات PC وأجهزة الكونسول</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('paid-games')">
+                        <span class="nav-icon neon-red"><i class="fa-solid fa-gem"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_paid_games">العاب مدفوعة</strong>
+                            <small data-key="sec_paid_games_sub">ألعاب VIP وبريميوم مجانية</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('login')">
+                        <span class="nav-icon neon-gold"><i class="fa-solid fa-user-shield"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_login">تسجيل دخول</strong>
+                            <small data-key="sec_login_sub">حسابك وعضويتك الملكية</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('settings')">
+                        <span class="nav-icon neon-silver"><i class="fa-solid fa-sliders"></i></span>
+                        <div class="nav-text">
+                            <strong data-key="sec_settings">الاعدادات</strong>
+                            <small data-key="sec_settings_sub">تخصيص المنصة والتفضيلات</small>
+                        </div>
+                        <i class="fa-solid fa-angle-left arrow-icon"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="drawer-footer">
+            <div class="guest-info-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <span data-key="guest_note">تتصفح حالياً بصلاحية زائر ملكي</span>
+                    <small data-key="guest_full_access">كافة الأقسام متاحة بدون قيود</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Flow (الصفحة الرئيسية التفاعلية) -->
+    <main class="main-content" id="mainHomeView">
+        
+        <!-- Hero Banner: Royal & Vibrant Neon Store (صورة المتجر الجميلة النابضة بالنيون) -->
+        <section class="store-hero-section">
+            <div class="hero-container">
+                <div class="hero-card-glow">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span class="pulse-spark"></span>
+                            <span data-key="hero_badge_text">✨ المنصة الرسمية الأولى 2026</span>
+                        </div>
+                        <h2 class="hero-title">
+                            <span data-key="hero_title_1">متجر</span> 
+                            <span class="neon-title-gold" data-key="hero_title_2">تاج الملوك</span>
+                            <br>
+                            <span class="neon-title-cyan" data-key="hero_title_3">عالم بلا حدود من الإثارة والتطبيقات</span>
+                        </h2>
+                        <p class="hero-description" data-key="hero_desc">
+                            اكتشف أضخم مكتبة ألعاب وتطبيقات مهكرة ومعدلة، ألعاب سحابية بدون تحميل، وأقوى أكواد التفعيل الحصرية مع تجربة سلسة وفائقة السرعة.
+                        </p>
+                        <div class="hero-actions">
+                            <button class="btn btn-gold-neon btn-lg" onclick="openSection('download-store')">
+                                <i class="fa-solid fa-download"></i>
+                                <span data-key="btn_download_store">تحميل المتجر الآن</span>
+                            </button>
+                            <button class="btn btn-cyan-neon btn-lg" onclick="openSection('buy-code')">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span data-key="btn_buy_vip">شراء كود VIP</span>
+                            </button>
+                            <button class="btn btn-glass btn-lg" onclick="openSection('cloud-games')">
+                                <i class="fa-solid fa-gamepad"></i>
+                                <span data-key="btn_cloud_play">الألعاب السحابية</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Store Visual Art (صورة وبانر المتجر التفاعلي النابض بالنيون) -->
+                    <div class="hero-visual">
+                        <div class="neon-store-banner">
+                            <div class="hologram-circle"></div>
+                            <div class="store-display-mockup">
+                                <div class="mockup-header">
+                                    <span class="mock-dot red"></span>
+                                    <span class="mock-dot yellow"></span>
+                                    <span class="mock-dot green"></span>
+                                    <span class="mock-title">TAJ STORE OS v3.4</span>
+                                </div>
+                                <div class="mockup-screen">
+                                    <div class="mock-crown-3d">
+                                        <i class="fa-solid fa-crown"></i>
+                                    </div>
+                                    <div class="mock-stats">
+                                        <div class="stat-pill">
+                                            <i class="fa-solid fa-fire text-amber"></i>
+                                            <span>+10,000 تطبيق ولعبة</span>
+                                        </div>
+                                        <div class="stat-pill">
+                                            <i class="fa-solid fa-shield-check text-green"></i>
+                                            <span>حماية وأمان 100%</span>
+                                        </div>
+                                        <div class="stat-pill">
+                                            <i class="fa-solid fa-server text-cyan"></i>
+                                            <span>سيرفرات سحابية فائقة</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-particle p1">💎</div>
+                            <div class="floating-particle p2">⚡</div>
+                            <div class="floating-particle p3">👑</div>
+                            <div class="floating-particle p4">🎮</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access Navigation Grid (الوصول السريع لجميع الأقسام) -->
+        <section class="quick-access-section">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <div class="title-with-pill">
+                        <span class="title-pill" data-key="quick_nav_pill">أقسام المنصة</span>
+                        <h3 class="section-title" data-key="quick_nav_title">الأقسام السريعة والمميزات</h3>
+                    </div>
+                    <p class="section-subtitle" data-key="quick_nav_sub">اضغط على أي قسم للانتقال الفوري بكبر الشاشة</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card card-gold" onclick="openSection('buy-code')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <h4 data-key="sec_buy_code">شراء كود</h4>
+                        <p data-key="card_buy_desc">احصل على كود التفعيل الفوري مع باقات سنوية وشهرية مميزة وبوابات دفع متعددة.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+
+                    <div class="feature-card card-cyan" onclick="openSection('activate-code')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-key"></i></div>
+                        <h4 data-key="sec_activate_code">تفعيل كود</h4>
+                        <p data-key="card_activate_desc">أدخل كود الاشتراك لتفعيله فورياً والتحقق من الصلاحية ومميزات حسابك.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+
+                    <div class="feature-card card-purple" onclick="openSection('download-store')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-circle-down"></i></div>
+                        <h4 data-key="sec_download_store">تحميل المتجر</h4>
+                        <p data-key="card_download_desc">تنزيل مباشر لمتجر تاج الملوك بصيغ APK للأندرويد، iOS للآيفون، ونسخة الويندوز.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+
+                    <div class="feature-card card-pink" onclick="openSection('cloud-games')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-cloud"></i></div>
+                        <h4 data-key="sec_cloud_games">العاب سحابية</h4>
+                        <p data-key="card_cloud_desc">العب أضخم ألعاب الـ PC والكونسول مباشرة من المتصفح بدون الحاجة لمواصفات عالية.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+
+                    <div class="feature-card card-blue" onclick="openSection('apps')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-cubes"></i></div>
+                        <h4 data-key="sec_apps">التطبيقات</h4>
+                        <p data-key="card_apps_desc">مكتبة التطبيقات المعدلة، بلس، والمفتوحة الميزات مع التحديثات الدورية.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+
+                    <div class="feature-card card-red" onclick="openSection('paid-games')">
+                        <div class="feature-glow"></div>
+                        <div class="feature-icon"><i class="fa-solid fa-gem"></i></div>
+                        <h4 data-key="sec_paid_games">العاب مدفوعة</h4>
+                        <p data-key="card_paid_desc">أقوى الألعاب العالمية المدفوعة متاحة للتحميل والتشغيل المباشر لأعضاء تاج الملوك.</p>
+                        <span class="card-btn-link"><span data-key="btn_open">فتح القسم</span> <i class="fa-solid fa-arrow-left"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform News & Announcements (أخبار المنصة التفاعلية) -->
+        <section class="news-section">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <div class="title-with-pill">
+                        <span class="title-pill neon-pill-gold" data-key="news_pill">تحديثات حصرية</span>
+                        <h3 class="section-title" data-key="news_title">أخبار وتحديثات تاج الملوك</h3>
+                    </div>
+                    <p class="section-subtitle" data-key="news_sub">تابع آخر إعلانات المنصة وتحديثات السيرفرات والألعاب الجديدة</p>
+                </div>
+
+                <div class="news-grid">
+                    <article class="news-card">
+                        <div class="news-badge-date">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>اليوم</span>
+                        </div>
+                        <div class="news-tag" data-key="news_tag_update">تحديث رئيسي</div>
+                        <h4 class="news-heading" data-key="news_1_head">إطلاق متجر تاج الملوك V3.4 بالسيرفرات السحابية</h4>
+                        <p class="news-excerpt" data-key="news_1_body">تم إطلاق السيرفرات السحابية فائقة السرعة مع دعم تشغيل الألعاب الثقيلة بجودة 4K ومعدل 60 إطاراً في الثانية من أي متصفح.</p>
+                        <div class="news-footer">
+                            <span class="author"><i class="fa-solid fa-crown text-gold"></i> الإدارة الملكية</span>
+                            <button class="btn-read-more" onclick="openNewsDetail(1)"><span data-key="read_more">اقرأ التفاصيل</span> &larr;</button>
+                        </div>
+                    </article>
+
+                    <article class="news-card">
+                        <div class="news-badge-date">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>أمس</span>
+                        </div>
+                        <div class="news-tag tag-offer" data-key="news_tag_offer">عرض خاص</div>
+                        <h4 class="news-heading" data-key="news_2_head">تخفيضات 50% على أكواد VIP السنوية لجميع الزوار</h4>
+                        <p class="news-excerpt" data-key="news_2_body">بمناسبة الموسم الجديد، احصل على كود تفعيل سنوي يفتح جميع التطبيقات والألعاب المدفوعة والألعاب السحابية بسعر استثنائي.</p>
+                        <div class="news-footer">
+                            <span class="author"><i class="fa-solid fa-crown text-gold"></i> قسم المبيعات</span>
+                            <button class="btn-read-more" onclick="openSection('buy-code')"><span data-key="claim_offer">استفد من العرض</span> &larr;</button>
+                        </div>
+                    </article>
+
+                    <article class="news-card">
+                        <div class="news-badge-date">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>منذ يومين</span>
+                        </div>
+                        <div class="news-tag tag-security" data-key="news_tag_sec">أمان وشهادات</div>
+                        <h4 class="news-heading" data-key="news_3_head">تجديد شهادات مطوري iOS وتحديث المحاكيات</h4>
+                        <p class="news-excerpt" data-key="news_3_body">تم تجديد الشهادات المؤسسية لتطبيقات الآيفون والآيباد بدون جلبريك مع إضافة نسخة جديدة لمحاكي الأندرويد والكونسول.</p>
+                        <div class="news-footer">
+                            <span class="author"><i class="fa-solid fa-crown text-gold"></i> الفريق التقني</span>
+                            <button class="btn-read-more" onclick="openSection('tutorials')"><span data-key="read_guide">دليل التثبيت</span> &larr;</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorials & Guides Section (قسم الشروحات) -->
+        <section class="tutorials-section">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <div class="title-with-pill">
+                        <span class="title-pill neon-pill-cyan" data-key="tut_pill">مركز المعرفة</span>
+                        <h3 class="section-title" data-key="tut_title">شروحات وأدلة استخدام المنصة</h3>
+                    </div>
+                    <p class="section-subtitle" data-key="tut_sub">شروحات خطوة بخطوة بالصور والفيديو لطريقة التثبيت واستخدام الأكواد</p>
+                </div>
+
+                <div class="tutorials-grid">
+                    <div class="tutorial-card" onclick="openTutorialModal(1)">
+                        <div class="tut-preview-icon"><i class="fa-solid fa-key"></i></div>
+                        <div class="tut-body">
+                            <span class="tut-step-count" data-key="tut_steps_1">3 خطوات سهلة</span>
+                            <h4 data-key="tut_1_title">شرح طريقة تفعيل كود الاشتراك بالمنصة</h4>
+                            <p data-key="tut_1_desc">دليل شامل وسريع لكيفية وضع الكود في خانة التفعيل والتحقق من حسابك فوراً.</p>
+                            <span class="tut-link"><i class="fa-solid fa-circle-play"></i> <span data-key="watch_guide">عرض الشرح الكامل</span></span>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-card" onclick="openTutorialModal(2)">
+                        <div class="tut-preview-icon"><i class="fa-brands fa-android"></i></div>
+                        <div class="tut-body">
+                            <span class="tut-step-count" data-key="tut_steps_2">أندرويد وآيفون</span>
+                            <h4 data-key="tut_2_title">طريقة تثبيت متجر تاج الملوك على هاتفك</h4>
+                            <p data-key="tut_2_desc">شرح تثبيت ملف الـ APK أو ملف تعريف الـ iOS وتخطي الحماية بخطوات آمنة.</p>
+                            <span class="tut-link"><i class="fa-solid fa-circle-play"></i> <span data-key="watch_guide">عرض الشرح الكامل</span></span>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-card" onclick="openTutorialModal(3)">
+                        <div class="tut-preview-icon"><i class="fa-solid fa-cloud"></i></div>
+                        <div class="tut-body">
+                            <span class="tut-step-count" data-key="tut_steps_3">لعب مباشر</span>
+                            <h4 data-key="tut_3_title">كيفية تشغيل الألعاب السحابية بدون تحميل</h4>
+                            <p data-key="tut_3_desc">طريقة ربط يد التحكم (الكونترولر) وبدء اللعب في السيرفرات السحابية بأعلى دقة.</p>
+                            <span class="tut-link"><i class="fa-solid fa-circle-play"></i> <span data-key="watch_guide">عرض الشرح الكامل</span></span>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-card" onclick="openTutorialModal(4)">
+                        <div class="tut-preview-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                        <div class="tut-body">
+                            <span class="tut-step-count" data-key="tut_steps_4">للحاسوب PC</span>
+                            <h4 data-key="tut_4_title">إعداد المحاكي وتشغيل ألعاب الجوال على الكمبيوتر</h4>
+                            <p data-key="tut_4_desc">أفضل إعدادات لمحاكي تاج الملوك لتشغيل الألعاب بمعدل 120 إطار مع تخصيص الأزرار.</p>
+                            <span class="tut-link"><i class="fa-solid fa-circle-play"></i> <span data-key="watch_guide">عرض الشرح الكامل</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <i class="fa-solid fa-crown text-gold"></i>
+                            <span data-key="platform_name">تاج الملوك</span>
+                        </div>
+                        <p data-key="footer_about">المنصة الملكية الشاملة للألعاب والتطبيقات وخدمات الأكواد السحابية مع تجربة مستخدم عصرية ومريحة للعين.</p>
+                    </div>
+                    <div class="footer-links-cols">
+                        <div class="f-col">
+                            <h5 data-key="f_col_sections">الأقسام</h5>
+                            <a href="javascript:void(0)" onclick="openSection('buy-code')" data-key="sec_buy_code">شراء كود</a>
+                            <a href="javascript:void(0)" onclick="openSection('activate-code')" data-key="sec_activate_code">تفعيل كود</a>
+                            <a href="javascript:void(0)" onclick="openSection('download-store')" data-key="sec_download_store">تحميل المتجر</a>
+                            <a href="javascript:void(0)" onclick="openSection('cloud-games')" data-key="sec_cloud_games">العاب سحابية</a>
+                        </div>
+                        <div class="f-col">
+                            <h5 data-key="f_col_support">الدعم والمجتمع</h5>
+                            <a href="javascript:void(0)" onclick="openSection('links')" data-key="sec_links">الروابط الرسمية</a>
+                            <a href="javascript:void(0)" onclick="openSection('tutorials')" data-key="sec_tutorials">الشروحات والأدلة</a>
+                            <a href="javascript:void(0)" onclick="toggleChatBot()" data-key="chat_bot_name">بوت المساعدة</a>
+                            <a href="javascript:void(0)" onclick="openSection('settings')" data-key="sec_settings">الإعدادات</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p data-key="copyright">© 2026 منصة تاج الملوك - جميع الحقوق محفوظة | تصميم كلاسيكي عصري فاخر</p>
+                    <div class="social-icons">
+                        <a href="javascript:void(0)" onclick="openSection('links')"><i class="fa-brands fa-telegram"></i></a>
+                        <a href="javascript:void(0)" onclick="openSection('links')"><i class="fa-brands fa-discord"></i></a>
+                        <a href="javascript:void(0)" onclick="openSection('links')"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="javascript:void(0)" onclick="openSection('links')"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- FULL-SCREEN MODAL VIEWS FOR ALL 12 SECTIONS (شاشات بكبر الجهاز مع زر رجوع) -->
+    <!-- ========================================================================= -->
+
+    <!-- Section View: Buy Code (شراء كود) -->
+    <div class="full-screen-view" id="view-buy-code">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-cart-shopping text-cyan"></i>
+                <h2 data-key="sec_buy_code">شراء كود تفعيل</h2>
+            </div>
+            <div class="view-badge">VIP PACKAGES</div>
+        </div>
+        <div class="view-body container">
+            <div class="plans-intro">
+                <h3 data-key="buy_headline">اختر باقة الاشتراك المناسبة لك</h3>
+                <p data-key="buy_subline">أكواد فورية مع ضمان كامل ودعم فني على مدار الساعة لجميع الأجهزة</p>
+            </div>
+            <div class="pricing-cards-grid">
+                <!-- Monthly Plan -->
+                <div class="pricing-card">
+                    <div class="plan-header">
+                        <span class="plan-tag" data-key="plan_month">باقة شهرية</span>
+                        <h4 data-key="plan_silver">الفضية VIP</h4>
+                        <div class="price-wrap">
+                            <span class="currency">$</span>
+                            <span class="amount">9.99</span>
+                            <span class="period" data-key="per_month">/ شهرياً</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_1">وصول كامل لجميع التطبيقات بلس</span></li>
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_2">ألعاب مهكرة ومعدلة مع التحديثات</span></li>
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_3">سيرفرات تحميل سريعة ومباشرة</span></li>
+                        <li><i class="fa-solid fa-xmark text-muted"></i> <span data-key="feat_no_cloud">الألعاب السحابية 4K (غير متضمنة)</span></li>
+                    </ul>
+                    <button class="btn btn-outline-cyan w-100" onclick="simulateBuy('باقة شهرية فضية', '$9.99')">
+                        <i class="fa-solid fa-bolt"></i> <span data-key="buy_now">شراء الكود الفوري</span>
+                    </button>
+                </div>
+
+                <!-- 6 Months Plan (Popular) -->
+                <div class="pricing-card featured-plan">
+                    <div class="popular-ribbon" data-key="most_popular">الأكثر طلباً 🔥</div>
+                    <div class="plan-header">
+                        <span class="plan-tag neon-gold" data-key="plan_6m">باقة 6 أشهر</span>
+                        <h4 data-key="plan_gold">الذهبية VIP</h4>
+                        <div class="price-wrap">
+                            <span class="currency">$</span>
+                            <span class="amount">29.99</span>
+                            <span class="period" data-key="per_6m">/ 6 أشهر</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check text-gold"></i> <span data-key="feat_all_apps">جميع ميزات الباقة الشهرية</span></li>
+                        <li><i class="fa-solid fa-check text-gold"></i> <span data-key="feat_cloud_access">سيرفرات الألعاب السحابية 60 FPS</span></li>
+                        <li><i class="fa-solid fa-check text-gold"></i> <span data-key="feat_all_paid">جميع الألعاب المدفوعة والمحاكيات</span></li>
+                        <li><i class="fa-solid fa-check text-gold"></i> <span data-key="feat_priority_support">دعم فني مخصص VIP</span></li>
+                    </ul>
+                    <button class="btn btn-gold-neon w-100 btn-lg" onclick="simulateBuy('باقة 6 أشهر ذهبية', '$29.99')">
+                        <i class="fa-solid fa-crown"></i> <span data-key="buy_now">شراء الكود الفوري</span>
+                    </button>
+                </div>
+
+                <!-- Yearly Plan -->
+                <div class="pricing-card">
+                    <div class="plan-header">
+                        <span class="plan-tag" data-key="plan_year">باقة سنوية</span>
+                        <h4 data-key="plan_royal">الملكية ROYAL VIP</h4>
+                        <div class="price-wrap">
+                            <span class="currency">$</span>
+                            <span class="amount">49.99</span>
+                            <span class="period" data-key="per_year">/ سنوياً</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_all_unlimited">وصول لا نهائي لكل خدمات المنصة</span></li>
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_cloud_4k">ألعاب سحابية 4K فائقة السرعة</span></li>
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_multi_device">تفعيل على 3 أجهزة بنفس الكود</span></li>
+                        <li><i class="fa-solid fa-check text-green"></i> <span data-key="feat_lifetime_warranty">ضمان تعويض وحماية كاملة</span></li>
+                    </ul>
+                    <button class="btn btn-outline-cyan w-100" onclick="simulateBuy('باقة سنوية ملكية', '$49.99')">
+                        <i class="fa-solid fa-gem"></i> <span data-key="buy_now">شراء الكود الفوري</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Methods Info -->
+            <div class="payment-methods-box">
+                <h5 data-key="payment_methods_title">طرق الدفع المدعومة بأمان تام:</h5>
+                <div class="methods-icons">
+                    <span><i class="fa-brands fa-cc-visa"></i> Visa / Mastercard</span>
+                    <span><i class="fa-brands fa-paypal"></i> PayPal</span>
+                    <span><i class="fa-brands fa-apple-pay"></i> Apple Pay</span>
+                    <span><i class="fa-brands fa-bitcoin"></i> USDT / Crypto</span>
+                    <span><i class="fa-solid fa-wallet"></i> المحافظ الإلكترونية</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Activate Code (تفعيل كود) -->
+    <div class="full-screen-view" id="view-activate-code">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-key text-green"></i>
+                <h2 data-key="sec_activate_code">تفعيل كود الاشتراك</h2>
+            </div>
+            <div class="view-badge">INSTANT ACTIVATION</div>
+        </div>
+        <div class="view-body container">
+            <div class="activation-card">
+                <div class="act-icon-crown"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 data-key="act_title">أدخل كود الاشتراك الخاص بك</h3>
+                <p data-key="act_desc">أدخل كود التفعيل المكون من حروف وأرقام لتفعيل صلاحياتك الملكية فوراً</p>
+                
+                <div class="act-input-group">
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-ticket input-icon"></i>
+                        <input type="text" id="activationCodeInput" placeholder="مثال: TAJ-2026-VIP-XXXXX" autocomplete="off" spellcheck="false">
+                        <button class="btn-paste" onclick="pasteActivationCode()" title="لصق الكود"><i class="fa-solid fa-paste"></i></button>
+                    </div>
+                    <button class="btn btn-gold-neon btn-lg" onclick="handleActivateCode()">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span data-key="btn_activate_now">تفعيل الآن</span>
+                    </button>
+                </div>
+
+                <!-- Test sample codes for convenience -->
+                <div class="sample-codes">
+                    <span data-key="sample_hint">أكواد تجريبية سريعة:</span>
+                    <button class="btn-sample" onclick="fillCode('TAJ-2026-ROYAL-VIP')">TAJ-2026-ROYAL-VIP</button>
+                    <button class="btn-sample" onclick="fillCode('TAJ-PLUS-GOLD-99')">TAJ-PLUS-GOLD-99</button>
+                </div>
+
+                <div id="activationResult" class="activation-result hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Download Store (تحميل المتجر) -->
+    <div class="full-screen-view" id="view-download-store">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-circle-down text-purple"></i>
+                <h2 data-key="sec_download_store">تحميل متجر تاج الملوك</h2>
+            </div>
+            <div class="view-badge">VERSION 3.4</div>
+        </div>
+        <div class="view-body container">
+            <div class="download-platforms-grid">
+                <!-- Android APK -->
+                <div class="download-card">
+                    <div class="os-icon os-android"><i class="fa-brands fa-android"></i></div>
+                    <h3>نسخة أندرويد (APK)</h3>
+                    <p>متوافق مع أندرويد 8.0 فما فوق، تثبيت مباشر وسريع بدون قيود.</p>
+                    <div class="dl-info">
+                        <span><i class="fa-solid fa-file"></i> 28.5 MB</span>
+                        <span><i class="fa-solid fa-code-branch"></i> v3.4.2</span>
+                    </div>
+                    <button class="btn btn-gold-neon w-100" onclick="triggerDownload('Android APK')">
+                        <i class="fa-solid fa-download"></i> <span data-key="dl_android">تحميل للأندرويد APK</span>
+                    </button>
+                </div>
+
+                <!-- iOS / iPhone / iPad -->
+                <div class="download-card">
+                    <div class="os-icon os-apple"><i class="fa-brands fa-apple"></i></div>
+                    <h3>نسخة iOS (آيفون / آيباد)</h3>
+                    <p>ملف تعريف مباشر وشهادة موقعة بدون الحاجة إلى جلبريك لجميع إصدارات iOS.</p>
+                    <div class="dl-info">
+                        <span><i class="fa-solid fa-shield"></i> شهادة موثقة</span>
+                        <span><i class="fa-solid fa-tablet-screen-button"></i> iPad & iPhone</span>
+                    </div>
+                    <button class="btn btn-cyan-neon w-100" onclick="triggerDownload('iOS Profile')">
+                        <i class="fa-solid fa-download"></i> <span data-key="dl_ios">تثبيت ملف iOS</span>
+                    </button>
+                </div>
+
+                <!-- Windows PC -->
+                <div class="download-card">
+                    <div class="os-icon os-windows"><i class="fa-brands fa-windows"></i></div>
+                    <h3>نسخة ويندوز (PC)</h3>
+                    <p>برنامج المتجر والمحاكي المدمج للحاسوب لتشغيل التطبيقات والألعاب بدقة 4K.</p>
+                    <div class="dl-info">
+                        <span><i class="fa-solid fa-desktop"></i> Win 10/11 (64-bit)</span>
+                        <span><i class="fa-solid fa-gauge-high"></i> تسريع GPU</span>
+                    </div>
+                    <button class="btn btn-purple-neon w-100" onclick="triggerDownload('Windows PC')">
+                        <i class="fa-solid fa-download"></i> <span data-key="dl_pc">تحميل للكمبيوتر EXE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Apps (التطبيقات) -->
+    <div class="full-screen-view" id="view-apps">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-cubes text-blue"></i>
+                <h2 data-key="sec_apps">مكتبة التطبيقات</h2>
+            </div>
+            <div class="view-badge">MODDED & PLUS</div>
+        </div>
+        <div class="view-body container">
+            <div class="filter-search-bar">
+                <div class="search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="appSearchInput" onkeyup="filterItems('app')" placeholder="ابحث عن تطبيق أو خدمة...">
+                </div>
+                <div class="filter-pills">
+                    <button class="pill active" onclick="filterCategory('app', 'all')">الكل</button>
+                    <button class="pill" onclick="filterCategory('app', 'social')">سوشيال ميديا</button>
+                    <button class="pill" onclick="filterCategory('app', 'media')">مونتاج وتصميم</button>
+                    <button class="pill" onclick="filterCategory('app', 'tools')">أدوات ونظام</button>
+                </div>
+            </div>
+
+            <div class="items-grid" id="appsGrid">
+                <!-- App Item 1 -->
+                <div class="item-card" data-category="social" data-name="انستقرام بلس برو">
+                    <div class="item-icon-box bg-grad-purple"><i class="fa-brands fa-instagram"></i></div>
+                    <div class="item-details">
+                        <h4>انستقرام بلس الذهبي</h4>
+                        <p>تحميل الستوري والريلز بجودة أصلية، إخفاء الظهور، وبدون إعلانات.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 4.9</span>
+                            <span><i class="fa-solid fa-download"></i> 1.2M</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('انستقرام بلس الذهبي')">تحميل</button>
+                </div>
+
+                <!-- App Item 2 -->
+                <div class="item-card" data-category="social" data-name="واتساب التاج الملكي">
+                    <div class="item-icon-box bg-grad-green"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div class="item-details">
+                        <h4>واتساب التاج الملكي</h4>
+                        <p>ضد الحظر، إخفاء جاري الكتابة والصحين الزرق، رسائل مجدولة وخطوط مميزة.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 5.0</span>
+                            <span><i class="fa-solid fa-download"></i> 3.5M</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('واتساب التاج الملكي')">تحميل</button>
+                </div>
+
+                <!-- App Item 3 -->
+                <div class="item-card" data-category="media" data-name="كاب كات برو التاج">
+                    <div class="item-icon-box bg-grad-dark"><i class="fa-solid fa-video"></i></div>
+                    <div class="item-details">
+                        <h4>CapCut Pro مفتوح الميزات</h4>
+                        <p>جميع الفلاتر والانتقالات المدفوعة مفتوحة مع تصدير بدقة 4K بدون علامة مائية.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 4.8</span>
+                            <span><i class="fa-solid fa-download"></i> 850K</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('CapCut Pro مفتوح')">تحميل</button>
+                </div>
+
+                <!-- App Item 4 -->
+                <div class="item-card" data-category="social" data-name="يوتيوب بريميوم بلس">
+                    <div class="item-icon-box bg-grad-red"><i class="fa-brands fa-youtube"></i></div>
+                    <div class="item-details">
+                        <h4>يوتيوب بريميوم التاج</h4>
+                        <p>بدون إعلانات نهائياً، تشغيل في الخلفية والشاشة مقفلة مع تنزيل الفيديوهات.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 4.9</span>
+                            <span><i class="fa-solid fa-download"></i> 2.8M</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('يوتيوب بريميوم التاج')">تحميل</button>
+                </div>
+
+                <!-- App Item 5 -->
+                <div class="item-card" data-category="tools" data-name="سبيد تيست وسيرفرات vpn">
+                    <div class="item-icon-box bg-grad-cyan"><i class="fa-solid fa-shield-virus"></i></div>
+                    <div class="item-details">
+                        <h4>VPN التاج الملكي السريع</h4>
+                        <p>سيرفرات فائقة السرعة بدون حد بيانات مع حماية خصوصية وتشفير عسكري.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 4.9</span>
+                            <span><i class="fa-solid fa-download"></i> 620K</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('VPN التاج الملكي')">تحميل</button>
+                </div>
+
+                <!-- App Item 6 -->
+                <div class="item-card" data-category="media" data-name="لايت روم فوتوشوب برو">
+                    <div class="item-icon-box bg-grad-blue"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="item-details">
+                        <h4>Lightroom VIP Presets</h4>
+                        <p>فلاتر احترافية وميزات الذكاء الاصطناعي لتعديل الصور بدقة عالية.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-star text-gold"></i> 4.7</span>
+                            <span><i class="fa-solid fa-download"></i> 410K</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('Lightroom VIP')">تحميل</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Games (العاب) -->
+    <div class="full-screen-view" id="view-games">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-gamepad text-pink"></i>
+                <h2 data-key="sec_games">مكتبة الألعاب المهكرة والمعدلة</h2>
+            </div>
+            <div class="view-badge">MODDED GAMES</div>
+        </div>
+        <div class="view-body container">
+            <div class="items-grid" id="gamesGrid">
+                <!-- Game 1 -->
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-red"><i class="fa-solid fa-crosshairs"></i></div>
+                    <div class="item-details">
+                        <h4>ببجي موبايل التاج VIP</h4>
+                        <p>ثبات سلاح، كشف أماكن 90 إطار، وحماية ضد الباند 100% لجميع الحسابات.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-bolt text-gold"></i> 90 FPS</span>
+                            <span><i class="fa-solid fa-hard-drive"></i> 1.8 GB</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('ببجي موبايل التاج VIP')">تحميل اللعبة</button>
+                </div>
+
+                <!-- Game 2 -->
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-cyan"><i class="fa-solid fa-car-side"></i></div>
+                    <div class="item-details">
+                        <h4>GTA San Andreas Remastered</h4>
+                        <p>مودات سيارات حديثة، رسوميات واقعية، وقائمة غش كاملة معربة بالكامل.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-shield-halved text-green"></i> معربة</span>
+                            <span><i class="fa-solid fa-hard-drive"></i> 2.4 GB</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('GTA San Andreas')">تحميل اللعبة</button>
+                </div>
+
+                <!-- Game 3 -->
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-green"><i class="fa-solid fa-cubes-stacked"></i></div>
+                    <div class="item-details">
+                        <h4>ماينكرافت التاج الأصلية</h4>
+                        <p>آخر إصدار مع شيدرات واقعية وسكنات ملكية مجانية وخوادم أونلاين شغالة.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-wifi text-cyan"></i> أونلاين</span>
+                            <span><i class="fa-solid fa-hard-drive"></i> 350 MB</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('ماينكرافت التاج')">تحميل اللعبة</button>
+                </div>
+
+                <!-- Game 4 -->
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-gold"><i class="fa-solid fa-futbol"></i></div>
+                    <div class="item-details">
+                        <h4>eFootball & FIFA Mod 2026</h4>
+                        <p>أحدث الانتقالات والطقوم العربية والتعليق العربي الكامل وأموال غير محدودة.</p>
+                        <div class="item-meta">
+                            <span><i class="fa-solid fa-microphone text-gold"></i> تعليق عربي</span>
+                            <span><i class="fa-solid fa-hard-drive"></i> 1.2 GB</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('FIFA 2026 Mod')">تحميل اللعبة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Cloud Games (العاب سحابية) -->
+    <div class="full-screen-view" id="view-cloud-games">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-cloud text-amber"></i>
+                <h2 data-key="sec_cloud_games">الألعاب السحابية (Cloud Gaming)</h2>
+            </div>
+            <div class="view-badge">INSTANT PLAY 60 FPS</div>
+        </div>
+        <div class="view-body container">
+            <div class="cloud-hero-box">
+                <div class="cloud-hero-text">
+                    <span class="cloud-chip"><i class="fa-solid fa-bolt"></i> خوادم سحابية فائقة السرعة</span>
+                    <h3>العب أضخم ألعاب الـ PC والـ PS5 مباشرة</h3>
+                    <p>لا تحتاج لتحميل أو مواصفات خارقة! اضغط وابدأ اللعب فوراً من جوالك أو متصفحك بدقة Full HD و 4K.</p>
+                </div>
+                <div class="cloud-latency-badge">
+                    <i class="fa-solid fa-signal text-green"></i>
+                    <span>بينج منخفض: 12ms</span>
+                </div>
+            </div>
+
+            <div class="cloud-games-grid">
+                <!-- Cloud Game 1 -->
+                <div class="cloud-card">
+                    <div class="cloud-badge-live"><i class="fa-solid fa-circle"></i> مباشر</div>
+                    <div class="cloud-game-cover bg-grad-dark">
+                        <i class="fa-solid fa-motorcycle cover-icon"></i>
+                        <h4>Cyberpunk 2077 Night City</h4>
+                    </div>
+                    <div class="cloud-info">
+                        <span><i class="fa-solid fa-tv"></i> 1080p 60FPS</span>
+                        <span><i class="fa-solid fa-gamepad"></i> يد التحكم مدعومة</span>
+                    </div>
+                    <button class="btn btn-gold-neon w-100" onclick="launchCloudGame('Cyberpunk 2077')">
+                        <i class="fa-solid fa-play"></i> بدء اللعب السحابي
+                    </button>
+                </div>
+
+                <!-- Cloud Game 2 -->
+                <div class="cloud-card">
+                    <div class="cloud-badge-live"><i class="fa-solid fa-circle"></i> مباشر</div>
+                    <div class="cloud-game-cover bg-grad-red">
+                        <i class="fa-solid fa-shield-cat cover-icon"></i>
+                        <h4>God of War Ragnarok</h4>
+                    </div>
+                    <div class="cloud-info">
+                        <span><i class="fa-solid fa-tv"></i> 4K HDR 60FPS</span>
+                        <span><i class="fa-solid fa-gamepad"></i> يد التحكم مدعومة</span>
+                    </div>
+                    <button class="btn btn-gold-neon w-100" onclick="launchCloudGame('God of War')">
+                        <i class="fa-solid fa-play"></i> بدء اللعب السحابي
+                    </button>
+                </div>
+
+                <!-- Cloud Game 3 -->
+                <div class="cloud-card">
+                    <div class="cloud-badge-live"><i class="fa-solid fa-circle"></i> مباشر</div>
+                    <div class="cloud-game-cover bg-grad-blue">
+                        <i class="fa-solid fa-car-burst cover-icon"></i>
+                        <h4>Forza Horizon 5 VIP</h4>
+                    </div>
+                    <div class="cloud-info">
+                        <span><i class="fa-solid fa-tv"></i> 1080p 60FPS</span>
+                        <span><i class="fa-solid fa-gamepad"></i> أونلاين جماعي</span>
+                    </div>
+                    <button class="btn btn-gold-neon w-100" onclick="launchCloudGame('Forza Horizon 5')">
+                        <i class="fa-solid fa-play"></i> بدء اللعب السحابي
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Links (الروابط) -->
+    <div class="full-screen-view" id="view-links">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-link text-teal"></i>
+                <h2 data-key="sec_links">الروابط والقنوات الرسمية</h2>
+            </div>
+            <div class="view-badge">OFFICIAL CHANNELS</div>
+        </div>
+        <div class="view-body container">
+            <div class="links-list-grid">
+                <a href="https://telegram.org" target="_blank" class="official-link-card">
+                    <div class="icon-bubble telegram"><i class="fa-brands fa-telegram"></i></div>
+                    <div class="link-info">
+                        <h4>قناة التلغرام الرسمية</h4>
+                        <p>تابع جديد الأكواد والتحديثات اليومية أولاً بأول وحل المشاكل الفورية.</p>
+                    </div>
+                    <span class="btn-link-action">انضمام الآن <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </a>
+
+                <a href="https://discord.com" target="_blank" class="official-link-card">
+                    <div class="icon-bubble discord"><i class="fa-brands fa-discord"></i></div>
+                    <div class="link-info">
+                        <h4>سيرفر الديسكورد الملكي</h4>
+                        <p>مجتمع اللاعبين ومسابقات يومية للحصول على أكواد VIP مجانية.</p>
+                    </div>
+                    <span class="btn-link-action">انضمام للسيرفر <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </a>
+
+                <a href="https://youtube.com" target="_blank" class="official-link-card">
+                    <div class="icon-bubble youtube"><i class="fa-brands fa-youtube"></i></div>
+                    <div class="link-info">
+                        <h4>قناة الشروحات على يوتيوب</h4>
+                        <p>فيديوهات تفصيلية لطرق التثبيت والتحميل وتشغيل الألعاب السحابية.</p>
+                    </div>
+                    <span class="btn-link-action">مشاهدة الفيديوهات <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </a>
+
+                <a href="javascript:void(0)" class="official-link-card" onclick="openSection('download-store')">
+                    <div class="icon-bubble mirror"><i class="fa-solid fa-server"></i></div>
+                    <div class="link-info">
+                        <h4>السيرفرات والروابط البديلة</h4>
+                        <p>سيرفرات طوارئ وروابط سريعة مباشرة في حال وجود أي حظر أو ضغط.</p>
+                    </div>
+                    <span class="btn-link-action">فتح الروابط البديلة <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Emulators (المحاكي) -->
+    <div class="full-screen-view" id="view-emulators">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-laptop-code text-indigo"></i>
+                <h2 data-key="sec_emulators">قسم المحاكيات (Emulators)</h2>
+            </div>
+            <div class="view-badge">PC & CONSOLE</div>
+        </div>
+        <div class="view-body container">
+            <div class="emulators-grid">
+                <div class="emu-card">
+                    <div class="emu-icon"><i class="fa-brands fa-android"></i></div>
+                    <h4>محاكي تاج الملوك للأندرويد (PC)</h4>
+                    <p>أسرع محاكي أندرويد للكمبيوتر مع دعم كرت الشاشة والماوس والكيبورد بدون أي لاق.</p>
+                    <ul class="emu-specs">
+                        <li><i class="fa-solid fa-bolt"></i> يدعم 120 FPS</li>
+                        <li><i class="fa-solid fa-microchip"></i> استهلاك منخفض للرام</li>
+                    </ul>
+                    <button class="btn btn-gold-neon w-100" onclick="downloadItem('محاكي تاج الملوك للكمبيوتر')">تحميل المحاكي</button>
+                </div>
+
+                <div class="emu-card">
+                    <div class="emu-icon"><i class="fa-brands fa-playstation"></i></div>
+                    <h4>محاكي كونسول PS2 & PSP للجوال والكمبيوتر</h4>
+                    <p>تشغيل جميع ألعاب البلايستيشن 2 و PSP القديمة والحديثة بأعلى دقة وجرافيك عالي.</p>
+                    <ul class="emu-specs">
+                        <li><i class="fa-solid fa-gamepad"></i> حفظ تلقائي وتخزين سحابي</li>
+                        <li><i class="fa-solid fa-check"></i> جاهز مع ملفات الـ BIOS</li>
+                    </ul>
+                    <button class="btn btn-cyan-neon w-100" onclick="downloadItem('محاكي الكونسول الملكي')">تحميل المحاكي</button>
+                </div>
+
+                <div class="emu-card">
+                    <div class="emu-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <h4>محاكي نينتندو سويتش (Switch Pro)</h4>
+                    <p>تشغيل أشهر ألعاب نينتندو سويتش مع تحسينات الأداء وتفعيل الأيادي الخارجية.</p>
+                    <ul class="emu-specs">
+                        <li><i class="fa-solid fa-star"></i> دقة 1440p محسنة</li>
+                        <li><i class="fa-solid fa-shield"></i> تحديثات مستمرة</li>
+                    </ul>
+                    <button class="btn btn-purple-neon w-100" onclick="downloadItem('محاكي Switch Pro')">تحميل المحاكي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Paid Games (العاب مدفوعة) -->
+    <div class="full-screen-view" id="view-paid-games">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-gem text-red"></i>
+                <h2 data-key="sec_paid_games">الألعاب المدفوعة والبريميوم</h2>
+            </div>
+            <div class="view-badge">FREE FOR MEMBERS</div>
+        </div>
+        <div class="view-body container">
+            <div class="vip-games-banner">
+                <i class="fa-solid fa-crown text-gold"></i>
+                <div>
+                    <h3 data-key="paid_banner_title">جميع هذه الألعاب مجانية 100% لأعضاء وزوار تاج الملوك</h3>
+                    <p data-key="paid_banner_sub">تم فتح كافة التراخيص والـ DLC والإضافات المدفوعة بدون أي تكلفة إضافية.</p>
+                </div>
+            </div>
+
+            <div class="items-grid">
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-gold"><i class="fa-solid fa-dragon"></i></div>
+                    <div class="item-details">
+                        <h4>Monster Hunter Stories VIP</h4>
+                        <p>اللعبة المدفوعة ($19.99) متاحة مجاناً مع جميع الإضافات والحزم.</p>
+                        <div class="item-meta">
+                            <span class="price-strikethrough">$19.99</span>
+                            <span class="price-free">مجاناً بالكامل</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('Monster Hunter Stories')">تنزيل مجاني</button>
+                </div>
+
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-red"><i class="fa-solid fa-skull"></i></div>
+                    <div class="item-details">
+                        <h4>Dead Cells + All DLCs</h4>
+                        <p>لعبة الأكشن الرهيبة مع جميع إضافات Castlevania والأسلحة النادرة.</p>
+                        <div class="item-meta">
+                            <span class="price-strikethrough">$14.99</span>
+                            <span class="price-free">مجاناً بالكامل</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('Dead Cells Complete')">تنزيل مجاني</button>
+                </div>
+
+                <div class="item-card">
+                    <div class="item-icon-box bg-grad-blue"><i class="fa-solid fa-building"></i></div>
+                    <div class="item-details">
+                        <h4>Minecraft Pocket Edition Deluxe</h4>
+                        <p>النسخة المدفوعة الأصلية مع حزم السكنات والعوالم الحصرية مجاناً.</p>
+                        <div class="item-meta">
+                            <span class="price-strikethrough">$7.99</span>
+                            <span class="price-free">مجاناً بالكامل</span>
+                        </div>
+                    </div>
+                    <button class="btn-item-action" onclick="downloadItem('Minecraft Deluxe')">تنزيل مجاني</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Login / Account (تسجيل دخول) -->
+    <div class="full-screen-view" id="view-login">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-user-shield text-gold"></i>
+                <h2 data-key="sec_login">تسجيل الدخول وعضوية التاج</h2>
+            </div>
+            <div class="view-badge">GUEST / MEMBER</div>
+        </div>
+        <div class="view-body container">
+            <div class="login-container-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+                    <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
+                </div>
+
+                <div class="auth-form-body">
+                    <!-- Guest notice banner -->
+                    <div class="guest-access-alert">
+                        <i class="fa-solid fa-circle-check text-green"></i>
+                        <div>
+                            <strong>أنت تتصفح كزائر مباشر حالياً!</strong>
+                            <p>يمكنك استخدام المنصة وتنزيل المحتوى بدون الحاجة لتسجيل حساب.</p>
+                        </div>
+                    </div>
+
+                    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                        <div class="form-group" id="groupName" style="display: none;">
+                            <label>الاسم أو اللقب الملكي</label>
+                            <div class="input-icon-field">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" id="authName" placeholder="أدخل اسمك">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>البريد الإلكتروني أو اسم المستخدم</label>
+                            <div class="input-icon-field">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="text" id="authEmail" required placeholder="user@taj-al-molook.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>كلمة المرور</label>
+                            <div class="input-icon-field">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="authPass" required placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold-neon w-100 btn-lg" id="authSubmitBtn">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span id="authBtnText">دخول الحساب</span>
+                        </button>
+                    </form>
+
+                    <div class="or-divider"><span>أو المتابعة السريعة</span></div>
+
+                    <button class="btn btn-glass w-100" onclick="stayAsGuest()">
+                        <i class="fa-solid fa-user-check text-gold"></i>
+                        <span>الاستمرار كزائر مباشر (بدون حساب)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section View: Settings (الإعدادات) -->
+    <div class="full-screen-view" id="view-settings">
+        <div class="view-header">
+            <button class="btn-back" onclick="closeSection()">
+                <i class="fa-solid fa-arrow-right icon-back"></i>
+                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            </button>
+            <div class="view-title">
+                <i class="fa-solid fa-sliders text-silver"></i>
+                <h2 data-key="sec_settings">إعدادات المنصة</h2>
+            </div>
+            <div class="view-badge">PREFERENCES</div>
+        </div>
+        <div class="view-body container">
+            <div class="settings-grid">
+                <!-- Appearance Settings -->
+                <div class="settings-group-card">
+                    <div class="group-title">
+                        <i class="fa-solid fa-palette text-gold"></i>
+                        <h3>المظهر والتأثيرات</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <strong>الوضع الليلي / النهاري</strong>
+                            <p>التبديل بين الثيم الملكي الداكن والثيم النهاري اللؤلؤي المريح.</p>
+                        </div>
+                        <button class="btn btn-outline-cyan btn-sm" onclick="toggleTheme()">
+                            <i class="fa-solid fa-circle-half-stroke"></i> تبديل الوضع
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <strong>تأثيرات النيون والإضاءة</strong>
+                            <p>تفعيل أو تعطيل التوهج النيوني للأجهزة منخفضة المواصفات.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleNeonGlow" checked onchange="toggleGlowEffects(this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Language & Sound Settings -->
+                <div class="settings-group-card">
+                    <div class="group-title">
+                        <i class="fa-solid fa-language text-cyan"></i>
+                        <h3>اللغة والمؤثرات</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <strong>لغة واجهة المنصة</strong>
+                            <p>تحويل النصوص بين العربية والإنجليزية دون تغيير هيكل الأقسام.</p>
+                        </div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="toggleLanguage()">
+                            <i class="fa-solid fa-globe"></i> <span id="settingLangLabel">English / العربية</span>
+                        </button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <strong>المؤثرات الصوتية الملكية</strong>
+                            <p>أصوات نقرات الأزرار والإشعارات التفاعلية.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleSound" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Cache & Storage -->
+                <div class="settings-group-card">
+                    <div class="group-title">
+                        <i class="fa-solid fa-database text-purple"></i>
+                        <h3>الذاكرة المؤقتة والبيانات</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <strong>مسح الذاكرة المؤقتة</strong>
+                            <p>تحديث كافة البيانات والأكواد المخزنة محلياً بالمتصفح.</p>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm" onclick="clearAppData()">
+                            <i class="fa-solid fa-trash-can"></i> مسح الكاش
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorials Modal Popup (شرح تفصيلي) -->
+    <div class="popup-modal-backdrop" id="tutorialModalBackdrop" onclick="closeTutorialModal()"></div>
+    <div class="popup-modal" id="tutorialModal">
+        <div class="modal-header">
+            <h3 id="tutModalTitle"><i class="fa-solid fa-graduation-cap text-gold"></i> الشرح التفصيلي</h3>
+            <button class="modal-close-btn" onclick="closeTutorialModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="tutModalBody">
+            <!-- Dynamic Content Injected by JS -->
+        </div>
+    </div>
+
+    <!-- AI Assistant Bot (بوت المساعدة التفاعلي - تاج الملوك) -->
+    <div class="ai-bot-widget" id="aiBotWidget">
+        <div class="bot-trigger-btn" onclick="toggleChatBot()" title="تحدث مع بوت المساعدة">
+            <div class="bot-avatar-glow">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <span class="bot-ping-ring"></span>
+            <span class="bot-label-tooltip" data-key="bot_tooltip">مساعد تاج الملوك</span>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="bot-chat-window" id="botChatWindow">
+            <div class="chat-header">
+                <div class="chat-bot-info">
+                    <div class="bot-head-icon"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h4 data-key="bot_title">بوت مساعدة تاج الملوك</h4>
+                        <span class="bot-status-online"><i class="fa-solid fa-circle"></i> متصل 24/7 لمساعدتك</span>
+                    </div>
+                </div>
+                <button class="chat-close-btn" onclick="toggleChatBot()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg bot-msg">
+                    <div class="msg-bubble">
+                        <p data-key="bot_welcome">مرحباً بك في منصة تاج الملوك! 👑 كيف يمكنني مساعدتك اليوم؟ يمكنك اختيار أحد الأسئلة السريعة أدناه أو كتابة استفسارك.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Chips for Chat -->
+            <div class="chat-chips-scroll">
+                <button class="chat-chip" onclick="sendQuickBotQuery('كيف أفعل كود الاشتراك؟')">🔑 تفعيل كود</button>
+                <button class="chat-chip" onclick="sendQuickBotQuery('كيف أحمل المتجر للآيفون والأندرويد؟')">📱 تحميل المتجر</button>
+                <button class="chat-chip" onclick="sendQuickBotQuery('طريقة تشغيل الألعاب السحابية؟')">🎮 الألعاب السحابية</button>
+                <button class="chat-chip" onclick="sendQuickBotQuery('طرق الدفع والشراء المتاحة')">💳 طرق الشراء</button>
+                <button class="chat-chip" onclick="sendQuickBotQuery('أريد التحدث مع الدعم البشري')">💬 الدعم الفني</button>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chatInputText" placeholder="اكتب رسالتك للبوت..." onkeypress="handleChatKeyPress(event)">
+                <button class="btn-send-chat" onclick="sendUserMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast System -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
