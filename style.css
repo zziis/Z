@@ -2782,3 +2782,11 @@ html.gaming-mode *{animation-duration:.22s!important}
 html.gaming-mode .theme-disabled-by-gaming{opacity:.42!important;cursor:not-allowed!important;pointer-events:auto!important}
 /* V14 overrides V13's light-theme gaming overlay completely. */
 [data-theme="gaming"].gaming-mode body,[data-theme="gaming"].gaming-mode .main-header,[data-theme="gaming"].gaming-mode .top-utility-bar,[data-theme="gaming"].gaming-mode .side-drawer,[data-theme="gaming"].gaming-mode .full-screen-view,[data-theme="gaming"].gaming-mode .view-header{background-color:#080b14!important;color:#f5f7ff!important}
+
+/* V15 developer hotfix */
+.dev-mode-switch{top:max(10px,env(safe-area-inset-top));z-index:20050!important}
+.developer-center{z-index:19990!important;padding-top:84px}
+.dev-head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.dev-tabs button.active{background:linear-gradient(135deg,#714cff,#00bfe8);box-shadow:0 0 14px #6d58ff55}
+.developer-preview #developerCenter{display:none!important}
+@media(max-width:700px){.dev-mode-switch{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;width:92vw;justify-content:center}.dev-mode-switch button{flex:1}.dev-shell>header{margin-top:4px;gap:10px}.dev-head-actions{justify-content:flex-start}.dev-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}.dev-tabs button{width:100%}}
