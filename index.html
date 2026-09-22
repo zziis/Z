@@ -249,16 +249,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link" onclick="openSection('login')">
-                        <span class="nav-icon neon-gold"><i class="fa-solid fa-user-shield"></i></span>
-                        <div class="nav-text">
-                            <strong data-key="sec_login">تسجيل دخول</strong>
-                            <small data-key="sec_login_sub">حسابك وعضويتك الملكية</small>
-                        </div>
-                        <i class="fa-solid fa-angle-left arrow-icon"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="javascript:void(0)" class="nav-link" onclick="openSection('settings')">
                         <span class="nav-icon neon-silver"><i class="fa-solid fa-sliders"></i></span>
                         <div class="nav-text">
@@ -583,9 +573,9 @@
     <!-- Section View: Buy Code (شراء كود) -->
     <div class="full-screen-view" id="view-buy-code">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-cart-shopping text-cyan"></i>
@@ -684,9 +674,9 @@
     <!-- Section View: Activate Code (تفعيل كود) -->
     <div class="full-screen-view" id="view-activate-code">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-key text-green"></i>
@@ -727,9 +717,9 @@
     <!-- Section View: Download Store (تحميل المتجر) -->
     <div class="full-screen-view" id="view-download-store">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-circle-down text-purple"></i>
@@ -787,9 +777,9 @@
     <!-- Section View: Apps (التطبيقات) -->
     <div class="full-screen-view" id="view-apps">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-cubes text-blue"></i>
@@ -902,9 +892,9 @@
     <!-- Section View: Games (العاب) -->
     <div class="full-screen-view" id="view-games">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-gamepad text-pink"></i>
@@ -976,9 +966,9 @@
     <!-- Section View: Cloud Games (العاب سحابية) -->
     <div class="full-screen-view" id="view-cloud-games">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-cloud text-amber"></i>
@@ -1054,9 +1044,9 @@
     <!-- Section View: Links (الروابط) -->
     <div class="full-screen-view" id="view-links">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-link text-teal"></i>
@@ -1108,9 +1098,9 @@
     <!-- Section View: Emulators (المحاكي) -->
     <div class="full-screen-view" id="view-emulators">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-laptop-code text-indigo"></i>
@@ -1159,9 +1149,9 @@
     <!-- Section View: Paid Games (العاب مدفوعة) -->
     <div class="full-screen-view" id="view-paid-games">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-gem text-red"></i>
@@ -1224,9 +1214,9 @@
     <!-- Section View: Login / Account (تسجيل دخول) -->
     <div class="full-screen-view" id="view-login">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-user-shield text-gold"></i>
@@ -1296,9 +1286,9 @@
     <!-- Section View: Settings (الإعدادات) -->
     <div class="full-screen-view" id="view-settings">
         <div class="view-header">
-            <button class="btn-back" onclick="closeSection()">
-                <i class="fa-solid fa-arrow-right icon-back"></i>
-                <span data-key="btn_back">رجوع إلى الرئيسية</span>
+            <button class="btn-back" onclick="backToSections()">
+                <i class="fa-solid fa-arrow-left icon-back"></i>
+                <span>رجوع</span>
             </button>
             <div class="view-title">
                 <i class="fa-solid fa-sliders text-silver"></i>
@@ -1308,6 +1298,10 @@
         </div>
         <div class="view-body container">
             <div class="settings-grid">
+                <div class="settings-group-card account-settings-entry">
+                    <div class="group-title"><i class="fa-solid fa-user-gear text-gold"></i><h3>أنا</h3></div>
+                    <div class="setting-item"><div class="setting-info"><strong>الحساب الشخصي</strong><p>الاسم، البريد، كلمة المرور، النقاط وإدارة الحساب.</p></div><button class="btn btn-outline-gold btn-sm" onclick="tajV7.openAccountSettings()"><i class="fa-solid fa-user"></i> فتح حسابي</button></div>
+                </div>
                 <!-- Appearance Settings -->
                 <div class="settings-group-card">
                     <div class="group-title">
@@ -1449,7 +1443,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
-    <script src="v5.js"></script>
-    <script src="v6.js"></script>
+    <script src="account.js"></script>
 </body>
 </html>

@@ -70,7 +70,7 @@ const i18n = {
         btn_buy_vip: 'شراء كود VIP',
         btn_cloud_play: 'الألعاب السحابية',
         btn_open: 'فتح القسم',
-        btn_back: 'رجوع إلى الرئيسية',
+        btn_back: 'رجوع',
 
         // Quick Sections & News
         quick_nav_pill: 'أقسام المنصة',
@@ -222,7 +222,7 @@ const i18n = {
         btn_buy_vip: 'Get VIP Code',
         btn_cloud_play: 'Cloud Gaming',
         btn_open: 'Open Section',
-        btn_back: 'Back to Home',
+        btn_back: 'Back',
 
         // Quick Sections & News
         quick_nav_pill: 'Departments',
@@ -511,6 +511,19 @@ function closeSection() {
         state.currentSection = null;
         document.body.style.overflow = 'auto';
     }
+}
+
+
+// رجوع من أي صفحة داخلية إلى قائمة الأقسام
+function backToSections() {
+    playRoyalSound('click');
+    if (state.currentSection) {
+        const currentView = document.getElementById(`view-${state.currentSection}`);
+        if (currentView) currentView.classList.remove('active');
+        state.currentSection = null;
+    }
+    document.body.style.overflow = 'hidden';
+    openSidebar();
 }
 
 // --- Buy Code Simulation ---
