@@ -1144,3 +1144,57 @@ function setupEventListeners() {
   document.addEventListener('DOMContentLoaded',()=>setTimeout(render,150));
   const oldOpen=window.openSection; window.openSection=function(id){const r=oldOpen(id);if(id==='activate-code')setTimeout(render,50);return r};
 })();
+
+
+// ===== V11: Ultra Gaming Mode =====
+(function ultraGamingMode(){
+    const KEY = 'taj_ultra_gaming_mode';
+    let navAudioCtx = null;
+
+    function setMode(enabled, notify){
+        document.documentElement.classList.toggle('gaming-mode', !!enabled);
+        localStorage.setItem(KEY, enabled ? '1' : '0');
+        const toggle = document.getElementById('toggleGamingMode');
+        if (toggle) toggle.checked = !!enabled;
+        if (notify && typeof showToast === 'function') {
+            showToast(enabled ? '🎮 تم تفعيل مود الألعاب العصري' : 'تم إيقاف مود الألعاب');
+        }
+    }
+
+    window.toggleGamingMode = function(input){
+        const enabled = typeof input === 'boolean' ? input : !!input.checked;
+        setMode(enabled, true);
+        if (enabled) gamingNavSound();
+    };
+
+    function gamingNavSound(){
+        if (!document.documentElement.classList.contains('gaming-mode')) return;
+        if (state && state.soundEnabled === false) return;
+        try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            navAudioCtx = navAudioCtx || new AC();
+            const ctx = navAudioCtx, now = ctx.currentTime;
+            const osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(980, now + .07);
+            gain.gain.setValueAtTime(.045, now);
+            gain.gain.exponentialRampToValueAtTime(.001, now + .11);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(now); osc.stop(now + .12);
+        } catch(e) {}
+    }
+
+    document.addEventListener('click', function(e){
+        if (!document.documentElement.classList.contains('gaming-mode')) return;
+        const target = e.target.closest('button,.nav-link,.btn,.category-card,.app-card,.game-card,a');
+        if (target) gamingNavSound();
+    }, true);
+
+    document.addEventListener('DOMContentLoaded', function(){
+        setMode(localStorage.getItem(KEY) === '1', false);
+    });
+    // script may execute after DOMContentLoaded
+    if (document.readyState !== 'loading') setMode(localStorage.getItem(KEY) === '1', false);
+})();
