@@ -2712,3 +2712,6 @@ input:checked + .slider:before {
 .header-right{order:0!important;justify-content:flex-start!important}
 .header-center{order:1!important}
 .header-left{order:2!important;justify-content:flex-end!important}
+
+/* V4 timed code status */
+.code-status-card{padding:18px;border-radius:18px;text-align:center}.code-status-card.is-active{background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.5)}.code-status-card.is-expired{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.5)}.code-status-top{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:800}.code-status-value{font-family:Orbitron,monospace;font-size:1.05rem;margin:16px 0;overflow-wrap:anywhere}.code-status-time{display:flex;flex-direction:column;gap:5px}.code-status-time b{font-family:Orbitron,monospace;font-size:1.7rem;letter-spacing:2px}.code-status-card.is-active .code-status-time b{color:#10b981}.code-status-card.is-expired .code-status-time b{color:#ef4444}#activationCodeInput:disabled{opacity:.72;cursor:not-allowed}

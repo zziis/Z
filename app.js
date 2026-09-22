@@ -1079,3 +1079,50 @@ function setupEventListeners() {
     });
   });
 })();
+
+// ===== V4: timed activation code prototype (client-side) =====
+(function timedCodesV4(){
+  const STORE_KEY='tajActiveCodeV4';
+  const DEMO_CODES={
+    'TAJ-TRIAL-60':{typeAr:'تجريبي',typeEn:'Trial',duration:60*60*1000},
+    'TAJ-BASIC-24H':{typeAr:'أساسي',typeEn:'Basic',duration:24*60*60*1000},
+    'TAJ-2026-ROYAL-VIP':{typeAr:'تجريبي',typeEn:'Trial',duration:60*60*1000},
+    'TAJ-PLUS-GOLD-99':{typeAr:'أساسي',typeEn:'Basic',duration:24*60*60*1000}
+  };
+  let timer=null;
+  function read(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(e){return null}}
+  function write(v){localStorage.setItem(STORE_KEY,JSON.stringify(v))}
+  function remaining(s){return Math.max(0,(s?.expiresAt||0)-Date.now())}
+  function fmt(ms){const t=Math.ceil(ms/1000),h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+  function render(){
+    const box=document.getElementById('activationResult'), input=document.getElementById('activationCodeInput');
+    if(!box||!input)return;
+    const s=read(); if(timer){clearInterval(timer);timer=null}
+    if(!s){input.disabled=false;return}
+    const left=remaining(s), active=left>0;
+    input.value=s.code; input.disabled=active;
+    box.className='activation-result '+(active?'success':'error'); box.classList.remove('hidden');
+    const ar=(window.state?.lang||'ar')==='ar';
+    box.innerHTML=`<div class="code-status-card ${active?'is-active':'is-expired'}">
+      <div class="code-status-top"><strong>${active?'🟢 '+(ar?'مفعّل':'Active'):'🔴 '+(ar?'غير مفعّل':'Inactive')}</strong><span>${ar?s.typeAr:s.typeEn}</span></div>
+      <div class="code-status-value">${s.code}</div>
+      <div class="code-status-time"><small>${ar?(active?'الوقت المتبقي':'انتهت الصلاحية'):(active?'Time remaining':'Expired')}</small><b>${active?fmt(left):'00:00:00'}</b></div>
+      ${active?`<p>${ar?'لا يمكن استبدال الكود حتى انتهاء مدته.':'The code cannot be replaced until it expires.'}</p>`:`<p>${ar?'يمكنك الآن إدخال كود جديد.':'You can now enter a new code.'}</p>`}
+    </div>`;
+    if(active) timer=setInterval(()=>{ if(remaining(read())<=0){render();showToast(ar?'انتهت صلاحية الكود، يمكنك تفعيل كود جديد.':'Code expired. You can activate a new code.')} else {const b=box.querySelector('.code-status-time b');if(b)b.textContent=fmt(remaining(read()))}},1000);
+  }
+  window.handleActivateCode=function(){
+    const input=document.getElementById('activationCodeInput'); if(!input)return;
+    const current=read();
+    if(current&&remaining(current)>0){render();showToast('يوجد كود مفعّل بالفعل');return}
+    const code=input.value.trim().toUpperCase();
+    if(!code){showToast('يرجى إدخال كود التفعيل');return}
+    const def=DEMO_CODES[code];
+    if(!def){const box=document.getElementById('activationResult');if(box){box.className='activation-result error';box.classList.remove('hidden');box.innerHTML='❌ الكود غير صالح أو غير موجود.'}return}
+    const now=Date.now(); write({code,typeAr:def.typeAr,typeEn:def.typeEn,activatedAt:now,expiresAt:now+def.duration});
+    render(); playRoyalSound('success'); showToast(def.typeAr==='تجريبي'?'تم تفعيل الكود التجريبي لمدة 60 دقيقة':'تم تفعيل الكود الأساسي');
+  };
+  window.fillCode=function(code){const s=read();if(s&&remaining(s)>0){render();showToast('لا يمكن تغيير الكود أثناء التفعيل');return}const i=document.getElementById('activationCodeInput');if(i)i.value=code};
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(render,150));
+  const oldOpen=window.openSection; window.openSection=function(id){const r=oldOpen(id);if(id==='activate-code')setTimeout(render,50);return r};
+})();
