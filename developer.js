@@ -1,100 +1,90 @@
-/* Taj Al Molook V16 — Developer Control Center stable hotfix */
+/* Taj Al Molook V17 — fully isolated Developer Center */
 (function(){
-'use strict';
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let sb=null, profile=null, mode='developer', dataCache={users:[],codes:[],sections:[],content:[]};
-function client(){
- if(sb) return sb;
- if(!window.supabase||!window.TAJ_SUPABASE_URL||!window.TAJ_SUPABASE_KEY) throw new Error('Supabase config missing');
- return sb=window.supabase.createClient(window.TAJ_SUPABASE_URL,window.TAJ_SUPABASE_KEY);
-}
-function toast(x){ if(typeof window.showToast==='function') window.showToast(x); else alert(x); }
-async function me(){
- const {data,error}=await client().auth.getUser(); if(error||!data?.user) return null;
- const r=await client().from('profiles').select('*').eq('id',data.user.id).maybeSingle();
- if(r.error) throw r.error; return r.data;
-}
-function isDeveloper(p){ return !!p && String(p.role||'').trim().toLowerCase()==='developer' && Number(p.user_number)===1; }
-function ensureSwitch(){
- let d=$('devModeSwitch');
- if(!d){ d=document.createElement('div'); d.id='devModeSwitch'; d.className='dev-mode-switch'; document.body.appendChild(d); }
- d.innerHTML= mode==='developer'
-   ? '<button type="button" class="active" data-dev-action="user">👤 دخول وضع المستخدم <small>ID 100</small></button>'
-   : '<button type="button" class="active return-dev" data-dev-action="developer">👑 الرجوع إلى المطور <small>ID 1</small></button>';
- d.style.display='flex';
-}
-function applyMode(){
- document.documentElement.classList.toggle('is-developer',!!isDeveloper(profile));
- document.body.classList.toggle('developer-preview',mode==='user');
- document.body.dataset.previewId=mode==='user'?'100':'';
- ensureSwitch();
-}
-async function init(){
- try{
-   profile=await me();
-   if(!isDeveloper(profile)){
-     document.documentElement.classList.remove('is-developer'); document.body.classList.remove('developer-preview');
-     $('devModeSwitch')?.remove(); $('developerCenter')?.remove(); return;
-   }
-   mode=localStorage.getItem('taj_dev_mode')==='user'?'user':'developer';
-   applyMode();
-   if(mode==='developer') await openDeveloper(); else enterUserPreview(false);
- }catch(e){ console.error('Developer init:',e); }
-}
-async function switchMode(next){
- if(!isDeveloper(profile)) return;
- mode=next==='user'?'user':'developer'; localStorage.setItem('taj_dev_mode',mode); applyMode();
- if(mode==='developer') await openDeveloper(); else enterUserPreview(true);
-}
-function enterUserPreview(notify=true){
- mode='user'; localStorage.setItem('taj_dev_mode','user'); applyMode(); $('developerCenter')?.remove();
- document.querySelectorAll('#guestBadge .member-text small,[data-user-id],.user-id').forEach(x=>{ if(x.dataset?.userId!==undefined) x.textContent='ID 100'; else if(/ID/i.test(x.textContent||'')) x.textContent='ID: 100'; });
- if(notify) toast('👤 وضع المستخدم التجريبي — ID 100');
-}
-async function openDeveloper(){
- mode='developer'; localStorage.setItem('taj_dev_mode','developer'); applyMode();
- let root=$('developerCenter'); if(!root){ root=document.createElement('div'); root.id='developerCenter'; root.className='developer-center'; document.body.appendChild(root); }
- root.innerHTML='<div class="dev-loading">👑 جاري تحميل لوحة المطور…</div>';
- await loadData(); renderShell(root); renderTab('overview');
-}
-function defaults(){return ['home','buy-code','activate-code','download-store','apps','games','cloud-games','links','emulators','paid-games','settings'].map((k,i)=>({section_key:k,title:k,enabled:true,sort_order:i}));}
-async function safe(q,fallback=[]){try{const r=await q;if(r.error){console.warn(r.error);return fallback}return r.data||fallback}catch(e){console.warn(e);return fallback}}
-async function loadData(){
- const c=client();
- const [users,codes,sections,content]=await Promise.all([
-   safe(c.from('profiles').select('id,user_number,display_name,points,role').order('user_number').limit(200)),
-   safe(c.from('subscription_codes').select('*').order('created_at',{ascending:false}).limit(100)),
-   safe(c.from('platform_sections').select('*').order('sort_order'),defaults()),
-   safe(c.from('platform_content').select('*').order('created_at',{ascending:false}).limit(100))
- ]);
- dataCache={users,codes,sections:sections.length?sections:defaults(),content};
-}
-function renderShell(root){
- const d=dataCache;
- root.innerHTML=`<div class="dev-shell"><header><div><b>👑 مركز تحكم تاج الملوك</b><small>Developer • ID 1</small></div><button type="button" data-dev-action="refresh">↻ تحديث</button></header>
- <div class="dev-stats"><span><b>${d.users.length}</b>حساب</span><span><b>${d.codes.length}</b>كود</span><span><b>${d.content.length}</b>منشور</span><span><b>${d.sections.filter(x=>x.enabled!==false).length}</b>قسم مفتوح</span></div>
- <nav class="dev-tabs"><button type="button" data-dev-tab="overview">⌂ الرئيسية</button><button type="button" data-dev-tab="codes">🔑 الأكواد</button><button type="button" data-dev-tab="users">👥 الحسابات</button><button type="button" data-dev-tab="sections">⚙ الأقسام</button><button type="button" data-dev-tab="publish">🚀 النشر</button></nav><main id="devPanel"></main></div>`;
-}
-function renderTab(t){
- const p=$('devPanel'),d=dataCache;if(!p)return;
- document.querySelectorAll('.dev-tabs [data-dev-tab]').forEach(b=>b.classList.toggle('active',b.dataset.devTab===t));
- if(t==='overview') p.innerHTML='<section class="dev-hero"><h2>التحكم الكامل بالمنصة</h2><p>اختر أحد الأقسام أعلاه لإدارة الأكواد والحسابات والأقسام والنشر.</p></section>';
- if(t==='codes') p.innerHTML=`<section class="dev-card"><h3>إنشاء كود</h3><div class="dev-form"><select id="dcType"><option value="trial">تجريبي</option><option value="basic">أساسي</option></select><input id="dcMinutes" type="number" value="60" min="1" placeholder="المدة بالدقائق"><button type="button" data-dev-action="create-code">＋ إنشاء</button></div></section><section class="dev-card"><h3>الأكواد</h3>${d.codes.map(x=>`<div class="dev-row"><span><b>${esc(x.code)}</b><small>${esc(x.code_type)} • ${x.duration_minutes||0} دقيقة</small></span><em>${x.used_by?'مستخدم':'متاح'}</em></div>`).join('')||'<p>لا توجد أكواد</p>'}</section>`;
- if(t==='users') p.innerHTML=`<section class="dev-card"><h3>الحسابات</h3>${d.users.map(x=>`<div class="dev-row"><span><b>${esc(x.display_name||'حساب')}</b><small>ID ${esc(x.user_number)} • ${Number(x.points||0).toLocaleString()} نقطة • ${esc(x.role||'user')}</small></span></div>`).join('')||'<p>لا توجد حسابات</p>'}</section>`;
- if(t==='sections') p.innerHTML=`<section class="dev-card"><h3>فتح وقفل الأقسام</h3><p class="dev-note">القسم المقفول يظهر للمستخدم تحت الصيانة.</p>${d.sections.map(x=>`<label class="dev-row dev-toggle"><span><b>${esc(x.title||x.section_key)}</b><small>${esc(x.section_key)}</small></span><input type="checkbox" data-section-key="${esc(x.section_key)}" ${x.enabled!==false?'checked':''}></label>`).join('')}</section>`;
- if(t==='publish') p.innerHTML=`<section class="dev-card"><h3>نشر برنامج أو لعبة</h3><div class="dev-form publish"><input id="pubName" placeholder="اسم البرنامج / اللعبة"><input id="pubVersion" placeholder="الإصدار"><select id="pubType"><option value="app">تطبيق</option><option value="game">لعبة</option></select><input id="pubImage" placeholder="رابط الصورة"><input id="pubUrl" placeholder="رابط الملف / التنزيل"><textarea id="pubDesc" placeholder="الوصف"></textarea><button type="button" data-dev-action="publish">🚀 نشر الآن</button></div></section><section class="dev-card"><h3>المنشورات</h3>${d.content.map(x=>`<div class="dev-row"><span><b>${esc(x.name)}</b><small>${esc(x.content_type)} • ${esc(x.version||'')}</small></span><button type="button" data-remove-content="${esc(x.id)}">حذف</button></div>`).join('')||'<p>لا توجد منشورات</p>'}</section>`;
-}
-async function createCode(){const type=$('dcType')?.value||'trial',min=Number($('dcMinutes')?.value)||60;const r=await client().rpc('admin_create_code',{p_type:type,p_duration_minutes:min});if(r.error)return toast('خطأ: '+r.error.message);toast('تم إنشاء الكود: '+r.data);await openDeveloper();renderTab('codes');}
-async function setSection(key,enabled){const r=await client().from('platform_sections').upsert({section_key:key,title:key,enabled,updated_at:new Date().toISOString()},{onConflict:'section_key'});if(r.error)return toast('خطأ: '+r.error.message);toast(enabled?'تم فتح القسم':'تم وضع القسم تحت الصيانة');const x=dataCache.sections.find(v=>v.section_key===key);if(x)x.enabled=enabled;}
-async function publish(){const row={name:$('pubName')?.value.trim(),version:$('pubVersion')?.value.trim(),content_type:$('pubType')?.value||'app',image_url:$('pubImage')?.value.trim(),download_url:$('pubUrl')?.value.trim(),description:$('pubDesc')?.value.trim(),published:true};if(!row.name)return toast('اكتب الاسم');const r=await client().from('platform_content').insert(row);if(r.error)return toast('خطأ: '+r.error.message);toast('تم النشر');await openDeveloper();renderTab('publish');}
-async function removeContent(id){if(!confirm('حذف هذا المنشور؟'))return;const r=await client().from('platform_content').delete().eq('id',id);if(r.error)return toast('خطأ: '+r.error.message);await openDeveloper();renderTab('publish');}
-document.addEventListener('click',async e=>{
- const a=e.target.closest('[data-dev-action]'); if(a){e.preventDefault();const x=a.dataset.devAction;if(x==='user')return switchMode('user');if(x==='developer')return switchMode('developer');if(x==='refresh')return openDeveloper();if(x==='create-code')return createCode();if(x==='publish')return publish();}
- const tab=e.target.closest('[data-dev-tab]');if(tab){e.preventDefault();return renderTab(tab.dataset.devTab);}
- const del=e.target.closest('[data-remove-content]');if(del){e.preventDefault();return removeContent(del.dataset.removeContent);}
-});
-document.addEventListener('change',e=>{const x=e.target.closest('[data-section-key]');if(x)setSection(x.dataset.sectionKey,x.checked);});
-window.tajDev={switchMode,openDeveloper,refresh:openDeveloper,tab:renderTab,createCode,section:setSection,publish,removeContent};
-document.addEventListener('DOMContentLoaded',()=>setTimeout(init,500));if(document.readyState!=='loading')setTimeout(init,500);try{client().auth.onAuthStateChange(()=>setTimeout(init,250))}catch(e){}
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  let sb=null, profile=null, mode='developer', data={users:[],codes:[],sections:[],content:[]};
+  const defaultSections=()=>['home','buy-code','activate-code','download-store','apps','games','cloud-games','links','emulators','paid-games','settings'].map((k,i)=>({section_key:k,title:k,enabled:true,sort_order:i}));
+  function client(){ if(sb)return sb; if(!window.supabase||!window.TAJ_SUPABASE_URL||!window.TAJ_SUPABASE_KEY) throw new Error('Supabase config missing'); return sb=window.supabase.createClient(window.TAJ_SUPABASE_URL,window.TAJ_SUPABASE_KEY); }
+  function toast(x){ if(typeof window.showToast==='function') window.showToast(x); else alert(x); }
+  async function me(){ const {data:{user}}=await client().auth.getUser(); if(!user)return null; const {data,error}=await client().from('profiles').select('*').eq('id',user.id).maybeSingle(); if(error)throw error; return data; }
+  function isDev(p){ return !!p && String(p.role||'').toLowerCase()==='developer' && Number(p.user_number)===1; }
+
+  function ensureSwitcher(){
+    let el=$('devModeSwitch');
+    if(!el){ el=document.createElement('div'); el.id='devModeSwitch'; el.className='dev-mode-switch-v17'; el.innerHTML='<button type="button" data-mode="developer">👑 <span>المطور</span><small>ID 1</small></button><button type="button" data-mode="user">👤 <span>المستخدم</span><small>ID 100</small></button>'; document.body.appendChild(el); }
+    el.onclick=e=>{ const b=e.target.closest('button[data-mode]'); if(b) switchMode(b.dataset.mode); };
+    paintSwitcher();
+  }
+  function paintSwitcher(){ const el=$('devModeSwitch'); if(!el)return; el.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode)); }
+  function closeUserLayers(){
+    document.querySelectorAll('.full-screen-view.active').forEach(x=>x.classList.remove('active'));
+    document.getElementById('sideDrawer')?.classList.remove('active');
+    document.getElementById('sidebarBackdrop')?.classList.remove('active');
+    try{ if(window.state) window.state.currentSection=null; }catch(e){}
+  }
+  function setModeClasses(){
+    document.documentElement.classList.toggle('taj-developer-session',isDev(profile));
+    document.body.classList.toggle('dev-admin-mode',mode==='developer');
+    document.body.classList.toggle('dev-user-preview-mode',mode==='user');
+    paintSwitcher();
+  }
+  async function switchMode(next){
+    if(!isDev(profile))return;
+    mode=next==='user'?'user':'developer'; localStorage.setItem('taj_dev_mode',mode);
+    if(mode==='developer'){ closeUserLayers(); setModeClasses(); await openDeveloper(); toast('👑 وضع المطور — ID 1'); }
+    else { $('developerCenter')?.remove(); setModeClasses(); updatePreviewIdentity(); toast('👤 معاينة المستخدم — ID 100'); }
+  }
+  function updatePreviewIdentity(){
+    if(mode!=='user')return;
+    document.body.dataset.previewId='100';
+    const badge=$('guestBadge'); if(badge){ const t=badge.querySelector('[data-key="guest_status"]')||badge.querySelector('span:last-child'); if(t)t.textContent='ID: 100'; badge.title='معاينة المستخدم — ID 100'; }
+  }
+
+  async function safe(table, query){ try{return await query(client().from(table));}catch(e){return {data:[],error:e};} }
+  async function loadData(){
+    const u=await safe('profiles',q=>q.select('id,user_number,display_name,username,points,role').order('user_number').limit(300));
+    const c=await safe('subscription_codes',q=>q.select('*').order('created_at',{ascending:false}).limit(200));
+    const s=await safe('platform_sections',q=>q.select('*').order('sort_order'));
+    const p=await safe('platform_content',q=>q.select('*').order('created_at',{ascending:false}).limit(200));
+    data={users:u.data||[],codes:c.data||[],sections:(s.data&&s.data.length?s.data:defaultSections()),content:p.data||[]};
+  }
+  function shell(){
+    let root=$('developerCenter'); if(!root){root=document.createElement('section');root.id='developerCenter';root.className='developer-center-v17';document.body.appendChild(root);}
+    root.innerHTML=`<div class="dev17-shell">
+      <header class="dev17-head"><div><h1>👑 مركز تحكم تاج الملوك</h1><p>Developer • ID 1</p></div><div class="dev17-head-actions"><button type="button" data-action="preview">👤 معاينة المستخدم</button><button type="button" data-action="refresh">↻ تحديث</button></div></header>
+      <div class="dev17-stats"><article><b>${data.users.length}</b><span>الحسابات</span></article><article><b>${data.codes.length}</b><span>الأكواد</span></article><article><b>${data.content.length}</b><span>المنشورات</span></article><article><b>${data.sections.filter(x=>x.enabled!==false).length}</b><span>الأقسام المفتوحة</span></article></div>
+      <nav class="dev17-tabs"><button data-tab="overview" class="active">⌂ الرئيسية</button><button data-tab="codes">🔑 الأكواد</button><button data-tab="users">👥 الحسابات</button><button data-tab="sections">⚙ الأقسام</button><button data-tab="publish">🚀 النشر</button></nav>
+      <main id="devPanelV17"></main></div>`;
+    root.onclick=handleClick; root.onchange=handleChange; tab('overview');
+  }
+  async function openDeveloper(){ if(mode!=='developer')return; setModeClasses(); let root=$('developerCenter'); if(!root){root=document.createElement('section');root.id='developerCenter';root.className='developer-center-v17';document.body.appendChild(root);} root.innerHTML='<div class="dev17-loading">👑 جاري تحميل لوحة المطور…</div>'; await loadData(); if(mode==='developer')shell(); }
+  function tab(name){
+    const p=$('devPanelV17'); if(!p)return;
+    document.querySelectorAll('.dev17-tabs [data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+    if(name==='overview') p.innerHTML='<section class="dev17-card dev17-welcome"><h2>لوحة المطور مستقلة بالكامل</h2><p>تحكم بالأكواد والحسابات والأقسام والنشر. واجهة المستخدم لا تظهر خلف هذه اللوحة.</p></section>';
+    if(name==='codes') p.innerHTML=`<section class="dev17-card"><h2>إنشاء كود</h2><div class="dev17-form"><select id="dcType"><option value="trial">تجريبي</option><option value="basic">أساسي</option></select><input id="dcMinutes" type="number" min="1" value="60" placeholder="المدة بالدقائق"><button data-action="create-code">＋ إنشاء الكود</button></div></section><section class="dev17-card"><h2>الأكواد</h2>${data.codes.map(x=>`<div class="dev17-row"><span><b>${esc(x.code)}</b><small>${esc(x.code_type||'')} • ${Number(x.duration_minutes||0)} دقيقة</small></span><em>${x.used_by?'مستخدم':'متاح'}</em></div>`).join('')||'<p class="dev17-empty">لا توجد أكواد حاليًا</p>'}</section>`;
+    if(name==='users') p.innerHTML=`<section class="dev17-card"><h2>الحسابات</h2>${data.users.map(x=>`<div class="dev17-row"><span><b>${esc(x.display_name||x.username||'حساب')}</b><small>ID ${esc(x.user_number)} • ${Number(x.points||0).toLocaleString()} نقطة • ${esc(x.role||'user')}</small></span><div class="dev17-actions"><button data-user="${esc(x.id)}" data-status="banned">حظر</button><button data-user="${esc(x.id)}" data-status="active">فتح</button></div></div>`).join('')||'<p class="dev17-empty">لا توجد حسابات</p>'}</section>`;
+    if(name==='sections') p.innerHTML=`<section class="dev17-card"><h2>فتح وقفل الأقسام</h2><p class="dev17-note">القسم المغلق يظهر للمستخدم تحت الصيانة.</p>${data.sections.map(x=>`<label class="dev17-row"><span><b>${esc(x.title||x.section_key)}</b><small>${esc(x.section_key)}</small></span><input class="dev17-check" type="checkbox" data-section="${esc(x.section_key)}" ${x.enabled!==false?'checked':''}></label>`).join('')}</section>`;
+    if(name==='publish') p.innerHTML=`<section class="dev17-card"><h2>نشر برنامج أو لعبة</h2><div class="dev17-form dev17-publish"><input id="pubName" placeholder="الاسم"><input id="pubVersion" placeholder="الإصدار"><select id="pubType"><option value="app">تطبيق</option><option value="game">لعبة</option></select><input id="pubImage" placeholder="رابط الصورة"><input id="pubUrl" placeholder="رابط التنزيل / الملف"><textarea id="pubDesc" placeholder="الوصف"></textarea><button data-action="publish">🚀 نشر الآن</button></div></section><section class="dev17-card"><h2>المنشورات</h2>${data.content.map(x=>`<div class="dev17-row"><span><b>${esc(x.name)}</b><small>${esc(x.content_type||'')} • ${esc(x.version||'')}</small></span><button data-delete="${esc(x.id)}">حذف</button></div>`).join('')||'<p class="dev17-empty">لا توجد منشورات</p>'}</section>`;
+  }
+  async function handleClick(e){
+    const tabBtn=e.target.closest('[data-tab]'); if(tabBtn){tab(tabBtn.dataset.tab);return;}
+    const a=e.target.closest('[data-action]'); if(a){ if(a.dataset.action==='preview')return switchMode('user'); if(a.dataset.action==='refresh')return openDeveloper(); if(a.dataset.action==='create-code')return createCode(); if(a.dataset.action==='publish')return publishContent(); }
+    const ub=e.target.closest('[data-user][data-status]'); if(ub)return setUserStatus(ub.dataset.user,ub.dataset.status);
+    const del=e.target.closest('[data-delete]'); if(del)return removeContent(del.dataset.delete);
+  }
+  async function handleChange(e){ const c=e.target.closest('[data-section]'); if(c) await setSection(c.dataset.section,c.checked); }
+  async function createCode(){ const type=$('dcType')?.value||'trial', mins=Number($('dcMinutes')?.value||60); const {data:r,error}=await client().rpc('admin_create_code',{p_type:type,p_duration_minutes:mins}); if(error)return toast('خطأ: '+error.message); toast('تم إنشاء الكود: '+r); await openDeveloper(); tab('codes'); }
+  async function setSection(key,enabled){ const {error}=await client().from('platform_sections').upsert({section_key:key,title:key,enabled,updated_at:new Date().toISOString()},{onConflict:'section_key'}); if(error)return toast('خطأ: '+error.message); toast(enabled?'تم فتح القسم':'تم قفل القسم للصيانة'); }
+  async function publishContent(){ const row={name:$('pubName')?.value.trim(),version:$('pubVersion')?.value.trim(),content_type:$('pubType')?.value,image_url:$('pubImage')?.value.trim(),download_url:$('pubUrl')?.value.trim(),description:$('pubDesc')?.value.trim(),published:true}; if(!row.name)return toast('اكتب اسم البرنامج أو اللعبة'); const {error}=await client().from('platform_content').insert(row); if(error)return toast('خطأ: '+error.message); toast('تم النشر'); await openDeveloper(); tab('publish'); }
+  async function removeContent(id){ if(!confirm('حذف هذا المنشور؟'))return; const {error}=await client().from('platform_content').delete().eq('id',id); if(error)return toast('خطأ: '+error.message); await openDeveloper(); tab('publish'); }
+  async function setUserStatus(id,status){ if(window.tajV5&&typeof window.tajV5.setStatus==='function')return window.tajV5.setStatus(id,status); toast('وظيفة حالة الحساب تحتاج RPC الخاص بالإدارة في Supabase.'); }
+  async function guardSection(id){ try{const {data:r}=await client().from('platform_sections').select('enabled').eq('section_key',id).maybeSingle();if(r&&r.enabled===false){showMaintenance();return false;}}catch(e){}return true; }
+  function showMaintenance(){ let o=$('maintenanceOverlay'); if(!o){o=document.createElement('div');o.id='maintenanceOverlay';o.className='maintenance-overlay';document.body.appendChild(o);} o.innerHTML='<div><i>🛠</i><h2>القسم تحت الصيانة</h2><p>نعمل على تطوير هذا القسم وسيعود قريبًا.</p><button type="button">رجوع</button></div>'; o.querySelector('button').onclick=()=>o.remove(); }
+  function hookSections(){ const original=window.openSection; if(typeof original==='function'&&!original.__dev17){ const wrapped=async function(id){if(await guardSection(id))return original(id)}; wrapped.__dev17=true; window.openSection=wrapped; } }
+  async function init(){ try{profile=await me(); if(!isDev(profile)){document.documentElement.classList.remove('taj-developer-session');document.body.classList.remove('dev-admin-mode','dev-user-preview-mode');$('devModeSwitch')?.remove();$('developerCenter')?.remove();return;} mode=localStorage.getItem('taj_dev_mode')==='user'?'user':'developer'; ensureSwitcher(); setModeClasses(); hookSections(); if(mode==='developer'){closeUserLayers();await openDeveloper();}else{updatePreviewIdentity();} }catch(e){console.warn('V17 developer init:',e);} }
+  window.tajDev={switchMode,openDeveloper,tab};
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(init,500)); if(document.readyState!=='loading')setTimeout(init,500);
+  try{client().auth.onAuthStateChange(()=>setTimeout(init,250));}catch(e){}
 })();
