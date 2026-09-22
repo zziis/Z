@@ -5,7 +5,7 @@
  function client(){return sb||(sb=window.supabase.createClient(window.TAJ_SUPABASE_URL,window.TAJ_SUPABASE_KEY))}
  async function me(){const {data:{user}}=await client().auth.getUser();if(!user)return null;const {data}=await client().from('profiles').select('*').eq('id',user.id).maybeSingle();return data}
  function toast(x){window.showToast?showToast(x):alert(x)}
- async function init(){try{profile=await me();if(profile&&profile.role==='developer'){document.documentElement.classList.add('is-developer'); addSwitch(); if(localStorage.getItem('taj_dev_mode')!=='user') openDeveloper(); else enterUserPreview(false)}}catch(e){console.warn('V12',e)}}
+ async function init(){try{profile=await me();const isDev=profile&&String(profile.role||'').toLowerCase()==='developer'&&Number(profile.user_number)===1;if(isDev){document.documentElement.classList.add('is-developer');addSwitch();if(localStorage.getItem('taj_dev_mode')!=='user')await openDeveloper();else enterUserPreview(false)}else{document.documentElement.classList.remove('is-developer');$('devModeSwitch')?.remove();$('developerCenter')?.remove()}}catch(e){console.warn('Developer init',e)}}
  function addSwitch(){if($('devModeSwitch'))return;const d=document.createElement('div');d.id='devModeSwitch';d.className='dev-mode-switch';d.innerHTML='<button id="devBtn" onclick="tajDev.switchMode(\'developer\')">👑 المطور <small>ID 1</small></button><button id="usrBtn" onclick="tajDev.switchMode(\'user\')">👤 معاينة المستخدم <small>ID 100</small></button>';document.body.appendChild(d)}
  function setSwitch(){document.body.classList.toggle('developer-preview',mode==='user');$('devBtn')?.classList.toggle('active',mode==='developer');$('usrBtn')?.classList.toggle('active',mode==='user')}
  async function switchMode(m){mode=m;localStorage.setItem('taj_dev_mode',m);setSwitch();if(m==='developer')openDeveloper();else enterUserPreview(true)}
@@ -29,5 +29,5 @@
  function showMaintenance(id){let o=$('maintenanceOverlay');if(!o){o=document.createElement('div');o.id='maintenanceOverlay';o.className='maintenance-overlay';document.body.appendChild(o)}o.innerHTML=`<div><i>🛠</i><h2>القسم تحت الصيانة</h2><p>نعمل على تطوير هذا القسم وسيعود قريبًا.</p><button onclick="this.closest('.maintenance-overlay').remove()">رجوع</button></div>`}
  const oldOpen=window.openSection; if(oldOpen)window.openSection=async function(id){if(await guardSection(id))return oldOpen(id)};
  window.tajDev={switchMode,openDeveloper,refresh:openDeveloper,tab,createCode,section,publish,removeContent};
- document.addEventListener('DOMContentLoaded',()=>setTimeout(init,500)); if(document.readyState!=='loading')setTimeout(init,500);
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(init,700)); if(document.readyState!=='loading')setTimeout(init,700); try{client().auth.onAuthStateChange(()=>setTimeout(init,350))}catch(e){}
 })();
