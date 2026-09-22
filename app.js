@@ -994,16 +994,17 @@ function setupEventListeners() {
   }
 
   // Royal procedural intro sound: no external audio file required.
+  let royalEntryAudio = null;
   function playRoyalIntroSound(){
     try{
-      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
-      const ctx = new AC(); const master = ctx.createGain(); master.gain.value=.12; master.connect(ctx.destination);
-      const now=ctx.currentTime;
-      [130.81,196,261.63,329.63,392,523.25].forEach((f,i)=>{
-        const o=ctx.createOscillator(), g=ctx.createGain(); o.type=i<2?'triangle':'sine'; o.frequency.value=f;
-        g.gain.setValueAtTime(0,now+i*.12); g.gain.linearRampToValueAtTime(.7,now+i*.12+.08); g.gain.exponentialRampToValueAtTime(.001,now+1.8+i*.1);
-        o.connect(g);g.connect(master);o.start(now+i*.12);o.stop(now+2.1+i*.12);
-      });
+      if(!royalEntryAudio){
+        royalEntryAudio = new Audio('royal-entry.wav');
+        royalEntryAudio.preload = 'auto';
+        royalEntryAudio.volume = 0.92;
+      }
+      royalEntryAudio.currentTime = 0;
+      const p = royalEntryAudio.play();
+      if(p && p.catch) p.catch(()=>{});
     }catch(e){}
   }
 
@@ -1020,7 +1021,7 @@ function setupEventListeners() {
       if(p>=100){ splash.classList.add('done'); setTimeout(()=>splash.remove(),550); return; }
       requestAnimationFrame(tick);
     };
-    if(video){ video.volume=1; video.play().catch(()=>{}); }
+    if(video){ video.muted=true; video.volume=0; video.play().catch(()=>{}); }
     requestAnimationFrame(tick);
   });
 
@@ -1067,12 +1068,12 @@ function setupEventListeners() {
     // Browsers often block autoplay audio. Try immediately; if blocked show one-tap sound activation on splash.
     const video=document.getElementById('royalIntroVideo'); const soundBtn=document.getElementById('enableIntroSound');
     if(video){
-      video.muted=false; video.volume=1;
+      video.muted=true; video.volume=0;
       const tryPlay=video.play();
       if(tryPlay && tryPlay.catch) tryPlay.catch(()=>{ video.muted=true; video.play().catch(()=>{}); if(soundBtn)soundBtn.classList.add('show'); });
     }
     if(soundBtn) soundBtn.addEventListener('click',()=>{
-      if(video){video.muted=false;video.volume=1;video.play().catch(()=>{});} 
+      if(video){video.muted=true;video.volume=0;video.play().catch(()=>{});} 
       try{ if(typeof playRoyalIntroSound==='function') playRoyalIntroSound(); }catch(e){}
       soundBtn.classList.remove('show');
     });

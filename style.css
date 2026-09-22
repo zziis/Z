@@ -2705,3 +2705,10 @@ input:checked + .slider:before {
  .theme-toggle-btn{width:34px;height:32px}.lang-toggle-btn{min-width:50px;height:32px;padding:0 7px}
  .ai-bot-widget{right:16px!important;left:auto!important;bottom:18px}
 }
+
+
+/* ===== Header position correction v3 =====
+   RTL visual layout: crown RIGHT, title CENTER, hamburger LEFT */
+.header-right{order:0!important;justify-content:flex-start!important}
+.header-center{order:1!important}
+.header-left{order:2!important;justify-content:flex-end!important}
