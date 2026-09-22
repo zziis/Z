@@ -1150,6 +1150,7 @@ function setupEventListeners() {
 (function ultraGamingMode(){
     const KEY = 'taj_ultra_gaming_mode';
     let navAudioCtx = null;
+    let lastGamingSoundAt = 0;
 
     function setMode(enabled, notify){
         document.documentElement.classList.toggle('gaming-mode', !!enabled);
@@ -1169,6 +1170,9 @@ function setupEventListeners() {
 
     function gamingNavSound(){
         if (!document.documentElement.classList.contains('gaming-mode')) return;
+        const t = performance.now();
+        if (t - lastGamingSoundAt < 90) return;
+        lastGamingSoundAt = t;
         if (state && state.soundEnabled === false) return;
         try {
             const AC = window.AudioContext || window.webkitAudioContext;
@@ -1197,4 +1201,57 @@ function setupEventListeners() {
     });
     // script may execute after DOMContentLoaded
     if (document.readyState !== 'loading') setMode(localStorage.getItem(KEY) === '1', false);
+})();
+
+// ===== V14: Gaming Mode is a standalone primary theme =====
+(function gamingPrimaryThemeV14(){
+  const KEY='taj_ultra_gaming_mode', PREV='taj_theme_before_gaming';
+  const oldToggleGaming=window.toggleGamingMode;
+  const oldToggleTheme=window.toggleTheme;
+
+  function syncThemeControl(){
+    const gaming=document.documentElement.classList.contains('gaming-mode');
+    const btn=document.getElementById('themeToggleBtn');
+    if(btn){
+      btn.classList.toggle('theme-disabled-by-gaming',gaming);
+      btn.setAttribute('aria-disabled',gaming?'true':'false');
+      btn.title=gaming?'أوقف مود الألعاب أولاً لتغيير الوضع الليلي/النهاري':'';
+    }
+  }
+  window.toggleGamingMode=function(input){
+    const enabled=typeof input==='boolean'?input:!!input.checked;
+    if(enabled){
+      localStorage.setItem(PREV,state.theme||localStorage.getItem('taj_theme')||'dark');
+      document.documentElement.classList.add('gaming-mode');
+      document.documentElement.setAttribute('data-theme','gaming');
+      localStorage.setItem(KEY,'1');
+      const t=document.getElementById('toggleGamingMode'); if(t)t.checked=true;
+      if(typeof showToast==='function')showToast('🎮 تم تفعيل مود الألعاب');
+    }else{
+      document.documentElement.classList.remove('gaming-mode');
+      localStorage.setItem(KEY,'0');
+      const restore=localStorage.getItem(PREV)||'dark';
+      applyTheme(restore);
+      const t=document.getElementById('toggleGamingMode'); if(t)t.checked=false;
+      if(typeof showToast==='function')showToast('تم إيقاف مود الألعاب');
+    }
+    syncThemeControl();
+  };
+  window.toggleTheme=function(){
+    if(document.documentElement.classList.contains('gaming-mode')){
+      if(typeof showToast==='function')showToast('🎮 أوقف مود الألعاب أولاً لتغيير الوضع الليلي أو النهاري');
+      return;
+    }
+    return oldToggleTheme();
+  };
+  function boot(){
+    if(localStorage.getItem(KEY)==='1'){
+      document.documentElement.classList.add('gaming-mode');
+      document.documentElement.setAttribute('data-theme','gaming');
+      const t=document.getElementById('toggleGamingMode'); if(t)t.checked=true;
+    }
+    syncThemeControl();
+  }
+  document.addEventListener('DOMContentLoaded',boot);
+  if(document.readyState!=='loading')boot();
 })();

@@ -75,3 +75,14 @@ git push -u origin main
 
 ---
 👑 **تاج الملوك** - تجربة ملكية لا مثيل لها 2026.
+
+## V13 performance/theme fix
+- Gaming Mode now overlays accents/effects on the currently selected Day/Night theme instead of forcing a dark palette.
+- Removed fixed full-screen grid/gradient rendering, icon drop-shadow filters, card box-shadow effects, and infinite name glow animation from Gaming Mode.
+- Navigation sound is throttled to reduce repeated WebAudio work during rapid clicks.
+
+## V14 — Standalone Gaming Mode
+- Gaming Mode is now a third primary theme, independent of Day/Night.
+- Enabling Gaming Mode suspends the Day/Night selector and uses the gaming palette everywhere.
+- Disabling it restores the Day/Night mode that was active before Gaming Mode.
+- Heavy blur, shadows and continuous effects are removed for smoother navigation.
