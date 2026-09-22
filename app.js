@@ -522,8 +522,13 @@ function backToSections() {
         if (currentView) currentView.classList.remove('active');
         state.currentSection = null;
     }
+    const drawer = document.getElementById('sideDrawer');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const hamburger = document.getElementById('menuToggleBtn');
+    if (drawer) drawer.classList.add('active');
+    if (backdrop) backdrop.classList.add('active');
+    if (hamburger) hamburger.classList.add('active');
     document.body.style.overflow = 'hidden';
-    openSidebar();
 }
 
 // --- Buy Code Simulation ---
@@ -1070,7 +1075,7 @@ function setupEventListeners() {
 
     // Clock.
     const clock=document.getElementById('liveClock');
-    const updateClock=()=>{ if(clock) clock.textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); };
+    const updateClock=()=>{ if(clock){ const d=new Date(), h=d.getHours(), ap=h>=12?'م':'ص', hh=((h%12)||12).toString().padStart(2,'0'), mm=d.getMinutes().toString().padStart(2,'0'); clock.textContent=`${hh}:${mm} ${ap}`; } };
     updateClock(); setInterval(updateClock,1000);
 
     // Smoothed live FPS counter.
