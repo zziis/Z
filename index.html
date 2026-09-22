@@ -888,78 +888,32 @@
         </div>
     </div>
 
-    <!-- Section View: Games (العاب) -->
+    <!-- Section View: Games (R2 Store) -->
     <div class="full-screen-view" id="view-games">
-        <div class="view-header">
-            <button class="btn-back" onclick="backToSections()">
-                <i class="fa-solid fa-arrow-left icon-back"></i>
-                <span>رجوع</span>
-            </button>
-            <div class="view-title">
-                <i class="fa-solid fa-gamepad text-pink"></i>
-                <h2 data-key="sec_games">مكتبة الألعاب المهكرة والمعدلة</h2>
-            </div>
-            <div class="view-badge">MODDED GAMES</div>
+      <div class="view-header">
+        <button class="btn-back" onclick="backToSections()"><i class="fa-solid fa-arrow-left icon-back"></i><span>رجوع</span></button>
+        <div class="view-title"><i class="fa-solid fa-gamepad text-pink"></i><h2>الألعاب</h2></div>
+        <div class="view-badge">R2 GAMES</div>
+      </div>
+      <div class="view-body container">
+        <div class="r2-games-grid" id="r2GamesGrid"></div>
+      </div>
+    </div>
+
+    <div class="r2-game-detail" id="r2GameDetail" aria-hidden="true">
+      <div class="r2-game-detail-card">
+        <button class="r2-detail-back" id="r2DetailBack"><i class="fa-solid fa-arrow-right"></i> رجوع للألعاب</button>
+        <img id="r2DetailImage" alt="صورة اللعبة">
+        <div class="r2-detail-content">
+          <h2 id="r2DetailName"></h2>
+          <div class="r2-detail-meta"><span id="r2DetailVersion"></span><span id="r2DetailSize"></span></div>
+          <h3>نبذة عن اللعبة</h3><p id="r2DetailDescription"></p>
+          <button class="r2-download-btn" id="r2DownloadBtn"><i class="fa-solid fa-download"></i><span>تنزيل</span></button>
+          <div class="r2-progress-wrap" id="r2ProgressWrap" hidden><div class="r2-progress-head"><span>جاري التنزيل</span><b id="r2ProgressText">0%</b></div><div class="r2-progress-track"><div id="r2ProgressBar"></div></div></div>
+          <button class="r2-install-btn" id="r2InstallBtn" hidden><i class="fa-brands fa-android"></i> تثبيت</button>
+          <small class="r2-install-note" id="r2InstallNote" hidden>سيطلب Android تأكيد تثبيت ملف APK.</small>
         </div>
-        <div class="view-body container">
-            <div class="items-grid" id="gamesGrid">
-                <!-- Game 1 -->
-                <div class="item-card">
-                    <div class="item-icon-box bg-grad-red"><i class="fa-solid fa-crosshairs"></i></div>
-                    <div class="item-details">
-                        <h4>ببجي موبايل التاج VIP</h4>
-                        <p>ثبات سلاح، كشف أماكن 90 إطار، وحماية ضد الباند 100% لجميع الحسابات.</p>
-                        <div class="item-meta">
-                            <span><i class="fa-solid fa-bolt text-gold"></i> 90 FPS</span>
-                            <span><i class="fa-solid fa-hard-drive"></i> 1.8 GB</span>
-                        </div>
-                    </div>
-                    <button class="btn-item-action" onclick="downloadItem('ببجي موبايل التاج VIP')">تحميل اللعبة</button>
-                </div>
-
-                <!-- Game 2 -->
-                <div class="item-card">
-                    <div class="item-icon-box bg-grad-cyan"><i class="fa-solid fa-car-side"></i></div>
-                    <div class="item-details">
-                        <h4>GTA San Andreas Remastered</h4>
-                        <p>مودات سيارات حديثة، رسوميات واقعية، وقائمة غش كاملة معربة بالكامل.</p>
-                        <div class="item-meta">
-                            <span><i class="fa-solid fa-shield-halved text-green"></i> معربة</span>
-                            <span><i class="fa-solid fa-hard-drive"></i> 2.4 GB</span>
-                        </div>
-                    </div>
-                    <button class="btn-item-action" onclick="downloadItem('GTA San Andreas')">تحميل اللعبة</button>
-                </div>
-
-                <!-- Game 3 -->
-                <div class="item-card">
-                    <div class="item-icon-box bg-grad-green"><i class="fa-solid fa-cubes-stacked"></i></div>
-                    <div class="item-details">
-                        <h4>ماينكرافت التاج الأصلية</h4>
-                        <p>آخر إصدار مع شيدرات واقعية وسكنات ملكية مجانية وخوادم أونلاين شغالة.</p>
-                        <div class="item-meta">
-                            <span><i class="fa-solid fa-wifi text-cyan"></i> أونلاين</span>
-                            <span><i class="fa-solid fa-hard-drive"></i> 350 MB</span>
-                        </div>
-                    </div>
-                    <button class="btn-item-action" onclick="downloadItem('ماينكرافت التاج')">تحميل اللعبة</button>
-                </div>
-
-                <!-- Game 4 -->
-                <div class="item-card">
-                    <div class="item-icon-box bg-grad-gold"><i class="fa-solid fa-futbol"></i></div>
-                    <div class="item-details">
-                        <h4>eFootball & FIFA Mod 2026</h4>
-                        <p>أحدث الانتقالات والطقوم العربية والتعليق العربي الكامل وأموال غير محدودة.</p>
-                        <div class="item-meta">
-                            <span><i class="fa-solid fa-microphone text-gold"></i> تعليق عربي</span>
-                            <span><i class="fa-solid fa-hard-drive"></i> 1.2 GB</span>
-                        </div>
-                    </div>
-                    <button class="btn-item-action" onclick="downloadItem('FIFA 2026 Mod')">تحميل اللعبة</button>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Section View: Cloud Games (العاب سحابية) -->
@@ -1455,5 +1409,6 @@
     <script src="app.js"></script>
     <script src="account.js"></script>
     <script src="developer.js"></script>
+    <script src="game-store.js?v=20"></script>
 </body>
 </html>

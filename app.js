@@ -962,7 +962,7 @@ function setupEventListeners() {
 
 // ===== 2026 Royal Update: splash, IDs, empty sections =====
 (function royalUpdate(){
-  const EMPTY_SECTIONS = new Set(['apps','games','cloud-games','paid-games','emulators']);
+  const EMPTY_SECTIONS = new Set(['apps','cloud-games','paid-games','emulators']);
   const originalOpenSection = window.openSection;
 
   function ensureGuestId(){
