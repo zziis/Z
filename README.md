@@ -36,3 +36,11 @@
 - يعمل داخل Android/WebView بدون `window.open`، ويدعم روابط HTTPS وdeep links مثل `app://` و`intent://`.
 - يجب أن يحتوي المنشور على `open_url`. شغّل `supabase-v27-open-url.sql` مرة واحدة إذا لم تكن أضفت العمود سابقًا.
 - ملف APK وحده لا يمكن تشغيله من السيرفر بدون تثبيت؛ في هذه الحالة استخدم رابط ويب/لعبة سحابية أو deep link لتطبيق مثبت.
+
+## V27.2 — فتح APK المثبّت مباشرة
+- أضف `Package Name` لكل لعبة أو تطبيق من حساب المطور، مثال: `com.company.game`.
+- شغّل `supabase-v27-2-package-name.sql` مرة واحدة في Supabase SQL Editor.
+- بعد تنزيل ملف APK، يتحول زر التنزيل إلى حالة تم التنزيل ويظهر زر **فتح**.
+- زر **فتح** يحاول تشغيل التطبيق المثبّت مباشرة باستخدام Package Name.
+- إذا كانت المنصة داخل Android WebView مخصص ويوجد JS bridge باسم `AndroidApp.launchPackage(packageName)` فسيتم استخدامه أولًا؛ وإلا يتم استخدام Android Intent كخيار احتياطي.
+- تنزيل الملف وحده لا يعني أنه مثبت؛ يجب تثبيت APK مرة واحدة قبل أن يستطيع Android تشغيله.
