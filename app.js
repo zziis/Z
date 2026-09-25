@@ -28,7 +28,7 @@ const i18n = {
         platform_name: 'تاج الملوك',
         edition_badge: 'الملكية',
         platform_slogan: 'بوابتك الشاملة للتطبيقات والألعاب والخدمات الحصرية',
-        tag_vip: 'VIP STORE',
+        tag_vip: 'تاج',
         tag_v: 'V3.0',
         drawer_title: 'قائمة تاج الملوك',
         drawer_subtitle: 'تصفح كافة أقسام المنصة',
@@ -180,7 +180,7 @@ const i18n = {
         platform_name: 'Crown of Kings',
         edition_badge: 'ROYAL',
         platform_slogan: 'Your Ultimate Hub for Modded Apps, Games & VIP Cloud Services',
-        tag_vip: 'VIP STORE',
+        tag_vip: 'CROWN',
         tag_v: 'V3.0',
         drawer_title: 'Crown Navigation',
         drawer_subtitle: 'Explore all platform departments',
@@ -325,12 +325,14 @@ const i18n = {
 };
 
 // --- Web Audio Synthesizer (for Royal Neon sound effects) ---
+let royalAudioContext = null;
 const playRoyalSound = (type = 'click') => {
     if (!state.soundEnabled) return;
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
-        const ctx = new AudioContext();
+        const ctx = royalAudioContext || (royalAudioContext = new AudioContext());
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
 
@@ -816,11 +818,11 @@ function respondFromBot(query) {
     if (q.includes('كود') || q.includes('تفعيل') || q.includes('code') || q.includes('activate')) {
         reply = isAr 
             ? 'لتفعيل الكود، اضغط على قسم **تفعيل كود** في القائمة، وضع رمز الاشتراك الخاص بك ثم اضغط "تفعيل الآن". إذا كنت تريد شراء كود جديد، تفضل بزيارة قسم **شراء كود** 👑'
-            : 'To activate your code, head over to the **Activate Code** department in the menu, paste your VIP key and click "Activate Now". For new keys, visit **Buy Code** 👑';
+            : 'To activate your code, open **Settings**. Available code offers are shown in the **Store** 👑';
     } else if (q.includes('تحميل') || q.includes('متجر') || q.includes('download') || q.includes('store') || q.includes('apk')) {
         reply = isAr
             ? 'يمكنك تنزيل متجر تاج الملوك بصيغة APK للأندرويد، أو ملف التعريف للآيفون والآيباد، أو نسخة الكمبيوتر مباشرة من قسم **تحميل المتجر** 🚀'
-            : 'You can download the Crown Store APK for Android, iOS profile, or PC version directly from the **Download Store** section 🚀';
+            : 'Apps and games are available from the **Apps** and **Games** sections with direct download 🚀';
     } else if (q.includes('سحابي') || q.includes('cloud') || q.includes('العاب')) {
         reply = isAr
             ? 'الألعاب السحابية تتيح لك تشغيل ألعاب PC و PS5 بجودة 4K ومعدل 60 إطاراً في الثانية من متصفحك مباشرة بدون تحميل! تفضل بزيارة قسم **العاب سحابية** للبدء 🎮'
@@ -962,7 +964,7 @@ function setupEventListeners() {
 
 // ===== 2026 Royal Update: splash, IDs, empty sections =====
 (function royalUpdate(){
-  const EMPTY_SECTIONS = new Set(['apps','cloud-games','paid-games','emulators']);
+  const EMPTY_SECTIONS = new Set([]); // V25: dynamic sections must never be overwritten with a placeholder
   const originalOpenSection = window.openSection;
 
   function ensureGuestId(){
@@ -994,12 +996,21 @@ function setupEventListeners() {
       body.innerHTML = `<div class="empty-state-royal"><i class="fa-solid ${comingSoon?'fa-hourglass-half':'fa-box-open'}"></i><h3>${comingSoon?'قريبًا':'لا يوجد محتوى حاليًا'}</h3><p>${comingSoon?'سيتم توفير هذه الخدمة قريبًا.':'سيتم إضافة المحتوى عند توفره.'}</p></div>`;
     }
   }
-  window.openSection = function(sectionId){
-    if(sectionId === 'buy-code'){ showEmpty(sectionId,true); return; }
-    if(EMPTY_SECTIONS.has(sectionId)){ showEmpty(sectionId,false); return; }
-    return originalOpenSection(sectionId);
+  const V26_SECTION_REDIRECTS={
+    'buy-code':'store',
+    'activate-code':'settings',
+    'download-store':'apps',
+    'emulators':'apps',
+    'paid-games':'games'
   };
-  window.simulateBuy = function(){ showEmpty('buy-code',true); };
+  window.openSection = function(sectionId){
+    sectionId=V26_SECTION_REDIRECTS[sectionId]||sectionId;
+    if(EMPTY_SECTIONS.has(sectionId)){ showEmpty(sectionId,false); return; }
+    const result=originalOpenSection(sectionId);
+    if(sectionId==='settings')setTimeout(()=>window.tajV24Account?.renderCode?.(),60);
+    return result;
+  };
+  window.simulateBuy = function(){ window.openSection('store'); };
 
   function updateIdentityBadge(){
     const badge = document.getElementById('guestBadge');
@@ -1017,7 +1028,7 @@ function setupEventListeners() {
     try{
       if(!royalEntryAudio){
         royalEntryAudio = new Audio('royal-entry.wav');
-        royalEntryAudio.preload = 'auto';
+        royalEntryAudio.preload = 'metadata';
         royalEntryAudio.volume = 0.92;
       }
       royalEntryAudio.currentTime = 0;
@@ -1031,7 +1042,7 @@ function setupEventListeners() {
     const splash=document.getElementById('royalSplash'), video=document.getElementById('royalIntroVideo'), bar=document.getElementById('royalProgressBar'), txt=document.getElementById('royalProgressText');
     if(!splash) return;
     let started=performance.now(), soundPlayed=false;
-    const duration=5000;
+    const duration=2200;
     const tick=()=>{
       if(!soundPlayed){playRoyalIntroSound();soundPlayed=true;}
       const p=Math.min(100,Math.round((performance.now()-started)/duration*100));

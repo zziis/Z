@@ -82,3 +82,71 @@
  async function deleteAccount(){if(!await dialog({icon:'🗑️',title:'حذف الحساب نهائيًا',message:'سيتم حذف الحساب نهائيًا ولا يمكن التراجع عن ذلك.',ok:'حذف نهائي',danger:true}))return;const {error}=await c().rpc('delete_my_account');if(error)return toast(error.message);localStorage.removeItem('tajMemberId');toast('تم حذف الحساب');setTimeout(()=>location.reload(),700)}
  window.tajV7={openAccountSettings,changeName,changeEmail,togglePass,changePass,confirmLogout,disableAccount,deleteAccount};
 })();
+
+/* ===== V24 — code guard + moderation session sync ===== */
+(()=>{
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const toast=s=>window.showToast?window.showToast(s):console.warn(s);
+  const c=()=>window.tajV5?.client?.();
+  async function effectiveSubscription(){
+    const db=c();if(!db)return null;
+    const {data:{user}}=await db.auth.getUser();if(!user)return null;
+    const subRes=await db.from('my_subscription').select('*').maybeSingle();
+    if(subRes.error||!subRes.data)return subRes.data||null;
+    const sub={...subRes.data};let adjust=0;
+    try{const r=await db.from('code_time_adjustments').select('adjust_minutes').eq('user_id',user.id).eq('code',sub.code).maybeSingle();if(!r.error&&r.data)adjust=Number(r.data.adjust_minutes||0)}catch(_){}
+    sub.adjust_minutes=adjust;
+    if(sub.expires_at){sub.effective_expires_at=new Date(new Date(sub.expires_at).getTime()+adjust*60000).toISOString()}
+    return sub;
+  }
+  async function activateCodeV24(){
+    try{
+      const db=c();if(!db)throw Error('Supabase غير جاهز');
+      const {data:{user}}=await db.auth.getUser();if(!user)throw Error('سجل الدخول أولاً لتفعيل الكود');
+      const old=await effectiveSubscription();
+      const end=old?.effective_expires_at||old?.expires_at;
+      if(end&&new Date(end)>new Date())throw Error('لديك كود مفعل بالفعل. لا يمكن تفعيل كود ثانٍ قبل انتهاء الحالي.');
+      const input=$('activationCode'),code=input?.value.trim().toUpperCase();if(!code)throw Error('أدخل الكود');
+      const {data,error}=await db.rpc('activate_subscription_code',{p_code:code});if(error)throw error;
+      toast(data?.message||'تم تفعيل الكود');if(input)input.value='';await renderCodeV24();
+    }catch(e){toast(e.message)}
+  }
+  async function renderCodeV24(){
+    const box=$('activationResult');if(!box)return;
+    try{
+      const db=c();const {data:{user}}=await db.auth.getUser();box.classList.remove('hidden');if(!user){box.innerHTML='سجّل الدخول لعرض حالة الكود.';return}
+      const sub=await effectiveSubscription();if(!sub){box.innerHTML='لا يوجد كود مفعّل.';return}
+      const end=new Date(sub.effective_expires_at||sub.expires_at),active=end>Date.now();
+      box.innerHTML=`<div class="code-status-card ${active?'is-active':'is-expired'}"><strong>${active?'🟢 مفعّل':'🔴 منتهي'}</strong><p>${String(sub.code_type||'')} • ${String(sub.code||'')}</p><p>ينتهي: ${end.toLocaleString('ar-IQ')}</p>${sub.adjust_minutes?`<small>تعديل الإدارة: ${sub.adjust_minutes>0?'+':''}${sub.adjust_minutes} دقيقة</small>`:''}</div>`;
+    }catch(e){box.innerHTML=String(e.message||e)}
+  }
+  function siteNotice(title,message){document.getElementById('taj24AccountNotice')?.remove();const x=document.createElement('div');x.id='taj24AccountNotice';x.className='taj24-modal';x.innerHTML=`<div class="taj24-dialog"><div class="taj24-dialog-icon">⚠️</div><h3>${title}</h3><p>${message}</p><div class="taj24-dialog-actions"><button>حسنًا</button></div></div>`;document.body.appendChild(x);x.querySelector('button').onclick=()=>x.remove()}
+  async function moderationCheck(){
+    try{
+      const db=c();if(!db)return;const {data:{user}}=await db.auth.getUser();if(!user)return;
+      const {data:p,error}=await db.from('profiles').select('account_status,frozen_until,force_logout_version').eq('id',user.id).maybeSingle();if(error||!p)return;
+      const k='taj_force_logout_'+user.id,nowV=Number(p.force_logout_version||0),old=localStorage.getItem(k);
+      if(old===null)localStorage.setItem(k,String(nowV));else if(Number(old)!==nowV){localStorage.setItem(k,String(nowV));siteNotice('تم إنهاء الجلسة','قام المطور بطرد هذه الجلسة. سجّل الدخول مرة أخرى.');setTimeout(async()=>{await db.auth.signOut();location.reload()},900);return}
+      if(p.account_status==='banned'){siteNotice('الحساب محظور','تم حظر هذا الحساب من الإدارة.');setTimeout(async()=>{await db.auth.signOut();location.reload()},1200);return}
+      if(p.frozen_until&&new Date(p.frozen_until)>new Date()){
+        const fk='taj_freeze_notice_'+p.frozen_until;if(!sessionStorage.getItem(fk)){sessionStorage.setItem(fk,'1');siteNotice('الحساب مجمّد','تم تجميد الحساب مؤقتًا حتى '+new Date(p.frozen_until).toLocaleString('ar-IQ'))}
+      }
+    }catch(e){console.warn('V24 moderation check',e)}
+  }
+  function install(){window.activateCode=activateCodeV24;if(window.tajV5){window.tajV5.activateCode=activateCodeV24;window.tajV5.renderCode=renderCodeV24}moderationCheck();setInterval(moderationCheck,15000)}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));if(document.readyState!=='loading')setTimeout(install,700);
+  window.tajV24Account={effectiveSubscription,activateCode:activateCodeV24,renderCode:renderCodeV24,moderationCheck};
+})();
+
+/* ===== V26 — activation moved into Settings ===== */
+(()=>{
+  async function paste(){
+    try{
+      const text=await navigator.clipboard.readText();
+      const input=document.getElementById('activationCode');
+      if(input){input.value=String(text||'').trim().toUpperCase();input.focus()}
+    }catch(e){ if(window.showToast)window.showToast('الصق الكود يدويًا داخل الحقل'); }
+  }
+  window.tajV26Code={paste};
+})();
