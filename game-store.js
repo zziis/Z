@@ -12,7 +12,14 @@
   const markDownloaded=id=>localStorage.setItem(key(id),'1');
   const objectPath=v=>{v=String(v||'').trim();if(!v)return '';if(/^https?:\/\//i.test(v)){try{v=decodeURIComponent(new URL(v).pathname.replace(/^\/+/,''));}catch(e){return ''}}return v.replace(/^\/+/, '')};
   const fileUrl=x=>{const v=objectPath(x.r2_object||x.download_url);if(!v)return '';return `${DOWNLOAD_BASE}/${v.split('/').map(encodeURIComponent).join('/')}`};
-  const directUrl=x=>String(x?.open_url||x?.launch_url||x?.web_url||x?.website_url||'').trim();
+  function normalizeOpenUrl(v){
+    v=String(v||'').trim();
+    if(!v)return '';
+    if(/^www\./i.test(v))v='https://'+v;
+    else if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(v)&&/^[\w.-]+\.[a-z]{2,}(?:[\/:?#]|$)/i.test(v))v='https://'+v;
+    return v;
+  }
+  const directUrl=x=>normalizeOpenUrl(x?.open_url||x?.launch_url||x?.web_url||x?.website_url||'');
   const toast=s=>window.showToast?window.showToast(s):console.warn(s);
   function normalizeSection(v,type){v=String(v||'').trim().toLowerCase().replace(/_/g,'-');const aliases={app:'apps',application:'apps',applications:'apps',game:'games',paid:'games','paidgames':'games','paid-game':'games','paid-games':'games',emulator:'apps',emulators:'apps',cloud:'cloud-games'};v=aliases[v]||v;if(['apps','games','cloud-games'].includes(v))return v;return String(type||'').toLowerCase()==='app'?'apps':'games'}
   const sectionOf=x=>normalizeSection(x.section_key,x.content_type);
@@ -26,10 +33,30 @@
   function renderAll(){['apps','games','cloud-games'].forEach(s=>toggleLegacy(s,false));['apps','games'].forEach(ensureDynamicEmpty);document.querySelectorAll('#view-apps .empty-state,#view-games .empty-state,#view-cloud-games .empty-state').forEach(x=>x.hidden=false);const groups={apps:[],games:[],'cloud-games':[]};items.forEach(x=>(groups[sectionOf(x)]??=[]).push(x));Object.entries(groups).forEach(([sec,list])=>{const g=target(sec);if(g){const html=list.map(card).join('');if(renderHashes.get(sec)!==html){g.innerHTML=html;renderHashes.set(sec,html)}toggleLegacy(sec,list.length>0);if(list.length)$('view-'+sec)?.querySelectorAll('.empty-state').forEach(x=>x.hidden=true)}});document.querySelectorAll('[data-content-id]').forEach(b=>b.onclick=()=>open(b.dataset.contentId))}
   function ensureLockedNote(){let n=$('r2LockedNote');if(!n){n=document.createElement('div');n.id='r2LockedNote';n.className='r2-locked-note';const row=document.querySelector('.r2-action-row')||$('r2DownloadBtn');row?.parentNode?.insertBefore(n,row)}return n}
   function ensurePrice(){let p=$('r2PriceLine');if(!p){p=document.createElement('div');p.id='r2PriceLine';p.className='taj-detail-price';const d=$('r2DetailDescription');d?.insertAdjacentElement('beforebegin',p)}return p}
-  function setButtons(){if(!current)return;const done=isDownloaded(current.id),locked=!!current.locked,n=ensureLockedNote(),openBtn=$('r2OpenBtn'),downloadBtn=$('r2DownloadBtn');if(n){n.hidden=!locked;n.textContent=current.lock_message||'🔒 أوقف المطور تنزيل هذا العنصر مؤقتًا.'}if(openBtn){const hasDirect=!!directUrl(current);openBtn.hidden=false;openBtn.disabled=!hasDirect;openBtn.title=hasDirect?'فتح التطبيق أو الخدمة مباشرة بدون تنزيل':'أضف رابط فتح مباشر من لوحة المطور'}if(downloadBtn){downloadBtn.hidden=locked;downloadBtn.disabled=false}if($('r2InstallBtn'))$('r2InstallBtn').hidden=!done||locked;if($('r2InstallNote'))$('r2InstallNote').hidden=!done||locked;if(done&&!locked){$('r2ProgressWrap').hidden=false;$('r2ProgressText').textContent='100%';$('r2ProgressBar').style.width='100%'}else if(!locked){$('r2ProgressWrap').hidden=true;$('r2ProgressText').textContent='0%';$('r2ProgressBar').style.width='0%'}else{$('r2ProgressWrap').hidden=true}}
+  function setButtons(){if(!current)return;const done=isDownloaded(current.id),locked=!!current.locked,n=ensureLockedNote(),openBtn=$('r2OpenBtn'),downloadBtn=$('r2DownloadBtn');if(n){n.hidden=!locked;n.textContent=current.lock_message||'🔒 أوقف المطور تنزيل هذا العنصر مؤقتًا.'}if(openBtn){const hasDirect=!!directUrl(current);openBtn.hidden=false;openBtn.disabled=locked;openBtn.title=hasDirect?'فتح التطبيق أو الخدمة مباشرة بدون تنزيل':'اضغط لمعرفة كيفية إضافة رابط الفتح المباشر'}if(downloadBtn){downloadBtn.hidden=locked;downloadBtn.disabled=false}if($('r2InstallBtn'))$('r2InstallBtn').hidden=!done||locked;if($('r2InstallNote'))$('r2InstallNote').hidden=!done||locked;if(done&&!locked){$('r2ProgressWrap').hidden=false;$('r2ProgressText').textContent='100%';$('r2ProgressBar').style.width='100%'}else if(!locked){$('r2ProgressWrap').hidden=true;$('r2ProgressText').textContent='0%';$('r2ProgressBar').style.width='0%'}else{$('r2ProgressWrap').hidden=true}}
   function open(id){current=items.find(x=>String(x.id)===String(id));if(!current)return;$('r2DetailImage').src=current.image_url||'';$('r2DetailName').textContent=current.name||'';$('r2DetailVersion').textContent='الإصدار: '+(current.version||'—');$('r2DetailSize').textContent='الحجم: '+(current.size_text||'—');$('r2DetailDescription').textContent=current.description||'لا توجد نبذة حاليًا.';const price=ensurePrice();if(price)price.innerHTML=priceHtml(current);const back=$('r2DetailBack');if(back)back.innerHTML='<i class="fa-solid fa-arrow-right"></i> رجوع';setButtons();$('r2GameDetail').classList.add('active');$('r2GameDetail').setAttribute('aria-hidden','false')}
   function close(){$('r2GameDetail')?.classList.remove('active');$('r2GameDetail')?.setAttribute('aria-hidden','true')}
-  function openDirect(){if(!current||current.locked)return;const url=directUrl(current);if(!url)return toast('الفتح المباشر غير مضاف لهذا التطبيق. أضف رابط الفتح من لوحة المطور.');try{const w=window.open(url,'_blank','noopener,noreferrer');if(!w)location.href=url}catch(e){location.href=url}}
+  function openDirect(){
+    if(!current||current.locked)return;
+    const url=directUrl(current);
+    if(!url)return toast('الفتح المباشر غير مضاف لهذا التطبيق. من حساب المطور افتح تعديل المحتوى وأضف رابط الفتح المباشر.');
+    try{
+      // Android WebView often blocks target=_blank/window.open. Same-window navigation is reliable.
+      close();
+      const a=document.createElement('a');
+      a.href=url;
+      a.target='_self';
+      a.rel='noopener noreferrer';
+      a.style.display='none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      // Fallback for WebViews that suppress synthetic anchor navigation.
+      setTimeout(()=>{try{if(document.visibilityState==='visible')window.location.assign(url)}catch(_){}},80);
+    }catch(e){
+      try{window.location.href=url}catch(_){toast('تعذر فتح الرابط المباشر. تأكد من الرابط في لوحة المطور.')}
+    }
+  }
   async function activeSubscription(){try{if(window.tajV24Account?.effectiveSubscription)return await window.tajV24Account.effectiveSubscription();const {data}=await client().from('my_subscription').select('*').maybeSingle();return data||null}catch(e){return null}}
   async function canDownload(){try{const {data:{user}}=await client().auth.getUser();if(!user){close();toast('🔐 التنزيل يحتاج تسجيل دخول أولاً.');window.openSection?.('login');return false}const sub=await activeSubscription();const end=sub?.effective_expires_at||sub?.expires_at;const active=!!sub&&(!end||new Date(end)>new Date());if(!active){close();toast('🔑 التنزيل يحتاج كود تفعيل صالح. فعّل الكود من الإعدادات.');window.openSection?.('settings');setTimeout(()=>{$('activationCode')?.focus()},250);return false}return true}catch(e){toast('تعذر التحقق من الحساب الآن. حاول مرة أخرى.');return false}}
   async function recordDownload(){if(!current?.id)return;try{const {error}=await client().rpc('record_content_download_v24',{p_content:String(current.id)});if(!error){current.download_count=Number(current.download_count||0)+1;const counter=document.querySelector(`[data-content-id="${CSS.escape(String(current.id))}"] .r2-download-count`);if(counter)counter.textContent='⬇ '+Number(current.download_count).toLocaleString('en-US')}}catch(e){console.warn('download counter',e)}}
